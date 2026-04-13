@@ -5,11 +5,41 @@ import { useScrollAnimation } from "./useScrollAnimation";
 const ContactSection = () => {
   const { ref, isVisible } = useScrollAnimation();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState(""); 
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Dziękuję za wiadomość! Skontaktuję się z Tobą wkrótce.");
-    setForm({ name: "", email: "", message: "" });
+    setStatus("Wysyłanie...");
+
+    
+    const formData = {
+      ...form,
+      access_key: "41fc8368-e927-4faf-ae1c-c0faf7286f6e", 
+      subject: "Nowa wiadomość z Twojego Portfolio",
+    };
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStatus("Wiadomość wysłana pomyślnie!");
+        setForm({ name: "", email: "", message: "" }); // Очистка формы
+      } else {
+        setStatus("Błąd podczas wysyłania. Spróbuj ponownie.");
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus("Coś poszło nie tak...");
+    }
   };
 
   return (
@@ -35,7 +65,7 @@ const ContactSection = () => {
 
             <div className="space-y-4">
               <a
-                href="mailto:hello@example.com"
+                href="mailto:medvedchukbogdan@gmail.com"
                 className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors"
               >
                 <Mail size={18} className="text-rose" /> medvedchukbogdan@gmail.com
@@ -66,6 +96,7 @@ const ContactSection = () => {
           >
             <input
               type="text"
+              name="name" 
               placeholder="Twoje imię"
               required
               value={form.name}
@@ -74,6 +105,7 @@ const ContactSection = () => {
             />
             <input
               type="email"
+              name="email" 
               placeholder="Email"
               required
               value={form.email}
@@ -81,6 +113,7 @@ const ContactSection = () => {
               className="w-full px-4 py-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body text-sm transition-all"
             />
             <textarea
+              name="message" 
               placeholder="Wiadomość"
               required
               rows={4}
@@ -94,6 +127,9 @@ const ContactSection = () => {
             >
               Wyślij <Send size={16} />
             </button>
+            
+            {/* статуса відправки */}
+            {status && <p className="text-sm font-mono mt-2 text-primary">{status}</p>}
           </form>
         </div>
       </div>
