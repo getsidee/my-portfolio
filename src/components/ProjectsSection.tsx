@@ -1,6 +1,6 @@
 import { ExternalLink, Github } from "lucide-react";
-import { useScrollAnimation } from "./useScrollAnimation";
 import { useTranslation } from "react-i18next";
+import { motion, Variants } from "framer-motion";
 
 interface Project {
   title: string;
@@ -27,8 +27,28 @@ const accentDot: Record<string, string> = {
 };
 
 const ProjectsSection = () => {
-  const { ref, isVisible } = useScrollAnimation();
   const { t } = useTranslation();
+
+  // Анимация для контейнера (каскадное появление карточек)
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  // Анимация для каждой отдельной карточки
+  const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.6, ease: "easeOut" } 
+    },
+  };
 
   const projects: Project[] = [
     {
@@ -67,26 +87,45 @@ const ProjectsSection = () => {
 
   return (
     <section id="projects" className="py-24 bg-gradient-section">
-      <div className="container mx-auto px-4" ref={ref}>
-        <h2
-          className={`font-heading text-3xl md:text-4xl font-bold mb-12 ${
-            isVisible ? "animate-fade-in" : "opacity-0"
-          }`}
+      <div className="container mx-auto px-4">
+        {/* Заголовок секции с анимацией появления */}
+        <motion.h2
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="font-heading text-3xl md:text-4xl font-bold mb-12"
         >
           <span className="text-gradient">// </span>{t("nav_projects")}
-        </h2>
+        </motion.h2>
 
-        <div className="grid md:grid-cols-3 gap-4">
+        {/* Сетка проектов с каскадной анимацией */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid md:grid-cols-3 gap-4"
+        >
           {projects.map((project, i) => (
-            <div
+            <motion.div
               key={i}
+              variants={cardVariants}
+              whileHover={{ 
+                y: -8, 
+                transition: { duration: 0.2 } 
+              }}
               className={`group p-6 rounded-xl bg-card border border-border transition-all ${
                 accentBorder[project.accent]
-              } ${project.span || ""} ${isVisible ? "animate-scale-in" : "opacity-0"}`}
-              style={{ animationDelay: `${i * 0.1}s` }}
+              } ${project.span || ""} shadow-sm hover:shadow-xl`}
             >
               <div className="flex items-center gap-2 mb-4">
-                <div className={`w-2 h-2 rounded-full ${accentDot[project.accent]}`} />
+                {/* Пульсирующая точка */}
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className={`w-2 h-2 rounded-full ${accentDot[project.accent]}`} 
+                />
                 <h3 className="font-heading text-lg font-semibold">{project.title}</h3>
               </div>
 
@@ -95,19 +134,21 @@ const ProjectsSection = () => {
               </p>
 
               <div className="flex flex-wrap gap-1.5 mb-4">
-                {project.tech.map((t) => (
+                {project.tech.map((tech) => (
                   <span
-                    key={t}
+                    key={tech}
                     className="px-2 py-1 text-xs bg-secondary text-secondary-foreground rounded font-mono"
                   >
-                    {t}
+                    {tech}
                   </span>
                 ))}
               </div>
 
               <div className="flex items-center gap-3">
                 {project.github && (
-                  <a
+                  <motion.a
+                    whileHover={{ scale: 1.2, rotate: 5 }}
+                    whileTap={{ scale: 0.9 }}
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -115,10 +156,12 @@ const ProjectsSection = () => {
                     aria-label="GitHub"
                   >
                     <Github size={18} />
-                  </a>
+                  </motion.a>
                 )}
                 {project.live && (
-                  <a
+                  <motion.a
+                    whileHover={{ scale: 1.2, rotate: -5 }}
+                    whileTap={{ scale: 0.9 }}
                     href={project.live}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -126,12 +169,12 @@ const ProjectsSection = () => {
                     aria-label="Live demo"
                   >
                     <ExternalLink size={18} />
-                  </a>
+                  </motion.a>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
