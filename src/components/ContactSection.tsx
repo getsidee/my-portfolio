@@ -32,7 +32,7 @@ const ContactSection = () => {
 
       if (result.success) {
         setStatus("Wiadomość wysłana pomyślnie!");
-        setForm({ name: "", email: "", message: "" }); // Очистка формы
+        setForm({ name: "", email: "", message: "" }); // Очистка форми
       } else {
         setStatus("Błąd podczas wysyłania. Spróbuj ponownie.");
       }

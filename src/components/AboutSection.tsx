@@ -38,15 +38,17 @@ const AboutSection = () => {
             style={{ animationDelay: "0.1s" }}
           >
             <p className="text-muted-foreground leading-relaxed">
-              Cześć! Jestem fullstack-developerem z ponad 5-letnim doświadczeniem w tworzeniu
-              aplikacji webowych. Specjalizuję się w React, TypeScript i Node.js.
+              Cześć, jestem Bohdan! 🚀
+
+Studiuję Informatykę i analitykę danych na UEP w Poznaniu. Pasjonuję się nowymi technologiami i analityką. Posiadam praktyczne umiejętności z zakresu front-endu (HTML/CSS), podstaw Pythona i Javy, a także montażu oraz obróbki graficznej (Adobe). Szukam miejsca, gdzie będę mógł połączyć moje zdolności techniczne z kreatywnością.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               Pasjonuję się czystym kodem, wydajnością i doświadczeniem użytkownika.
-              W wolnym czasie uczestniczę w projektach open-source i piszę artykuły techniczne.
+              
             </p>
             <a
-              href="#"
+              href="/Bohdan_Medvedchuk_CV.pdf"
+              download="Bohdan_Medvdchuk_CV.pdf"
               className="inline-block mt-4 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-mono text-sm hover:opacity-90 transition-opacity glow-primary"
             >
               Pobierz CV ↓
