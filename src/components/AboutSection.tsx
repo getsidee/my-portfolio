@@ -1,25 +1,27 @@
 import { useScrollAnimation } from "./useScrollAnimation";
-
-const skills = [
-  { category: "Frontend", items: ["React", "TypeScript", "Tailwind CSS", "Next.js"], color: "primary" },
-  { category: "Backend", items: ["Node.js", "Python", "PostgreSQL", "REST API"], color: "emerald" },
-  { category: "Narzędzia", items: ["Git", "Docker", "Figma", "CI/CD"], color: "amber" },
-];
-
-const colorMap: Record<string, string> = {
-  primary: "border-primary/30 hover:glow-primary",
-  emerald: "border-emerald/30",
-  amber: "border-amber/30",
-};
-
-const badgeMap: Record<string, string> = {
-  primary: "bg-primary/10 text-primary",
-  emerald: "bg-emerald/10 text-emerald",
-  amber: "bg-amber/10 text-amber",
-};
+import { useTranslation } from "react-i18next";
 
 const AboutSection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const { t } = useTranslation();
+
+  const skills = [
+    { category: t("skills_frontend"), items: ["React", "TypeScript", "Tailwind CSS", "Next.js"], color: "primary" },
+    { category: t("skills_backend"), items: ["Node.js", "Python", "PostgreSQL", "REST API"], color: "emerald" },
+    { category: t("skills_tools"), items: ["Git", "Docker", "Figma", "CI/CD"], color: "amber" },
+  ];
+
+  const colorMap: Record<string, string> = {
+    primary: "border-primary/30 hover:glow-primary",
+    emerald: "border-emerald/30",
+    amber: "border-amber/30",
+  };
+
+  const badgeMap: Record<string, string> = {
+    primary: "bg-primary/10 text-primary",
+    emerald: "bg-emerald/10 text-emerald",
+    amber: "bg-amber/10 text-amber",
+  };
 
   return (
     <section id="about" className="py-24">
@@ -29,7 +31,7 @@ const AboutSection = () => {
             isVisible ? "animate-fade-in" : "opacity-0"
           }`}
         >
-          <span className="text-gradient">// </span>O mnie
+          <span className="text-gradient">// </span>{t("nav_about")}
         </h2>
 
         <div className="grid md:grid-cols-2 gap-12">
@@ -37,21 +39,18 @@ const AboutSection = () => {
             className={`space-y-4 ${isVisible ? "animate-fade-in" : "opacity-0"}`}
             style={{ animationDelay: "0.1s" }}
           >
-            <p className="text-muted-foreground leading-relaxed">
-              Cześć, jestem Bohdan! 🚀
-
-Studiuję Informatykę i analitykę danych na UEP w Poznaniu. Pasjonuję się nowymi technologiami i analityką. Posiadam praktyczne umiejętności z zakresu front-endu (HTML/CSS), podstaw Pythona i Javy, a także montażu oraz obróbki graficznej (Adobe). Szukam miejsca, gdzie będę mógł połączyć moje zdolności techniczne z kreatywnością.
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+              {t("about_text_1")}
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              Pasjonuję się czystym kodem, wydajnością i doświadczeniem użytkownika.
-              
+              {t("about_text_2")}
             </p>
             <a
               href="/Bohdan_Medvedchuk_CV.pdf"
-              download="Bohdan_Medvdchuk_CV.pdf"
+              download="Bohdan_Medvedchuk_CV.pdf"
               className="inline-block mt-4 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-mono text-sm hover:opacity-90 transition-opacity glow-primary"
             >
-              Pobierz CV ↓
+              {t("download_cv")} ↓
             </a>
           </div>
 

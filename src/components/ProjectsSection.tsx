@@ -1,5 +1,6 @@
 import { ExternalLink, Github } from "lucide-react";
 import { useScrollAnimation } from "./useScrollAnimation";
+import { useTranslation } from "react-i18next";
 
 interface Project {
   title: string;
@@ -10,41 +11,6 @@ interface Project {
   span?: string;
   accent: string;
 }
-
-const projects: Project[] = [
-  {
-    title: "E-Commerce Platform",
-    description: "W pełni funkcjonalny sklep internetowy z koszykiem, płatnościami i panelem administracyjnym.",
-    tech: ["React", "Node.js", "PostgreSQL", "Stripe"],
-    github: "https://github.com",
-    live: "https://example.com",
-    span: "md:col-span-2",
-    accent: "primary",
-  },
-  {
-    title: "Task Manager",
-    description: "Tablica Kanban do zarządzania zadaniami z drag-and-drop w czasie rzeczywistym.",
-    tech: ["TypeScript", "Next.js", "Prisma"],
-    github: "https://github.com",
-    accent: "emerald",
-  },
-  {
-    title: "Weather App",
-    description: "Aplikacja prognozy pogody z geolokalizacją i pięknymi animacjami.",
-    tech: ["React", "OpenWeather API", "Tailwind"],
-    live: "https://example.com",
-    accent: "cyan",
-  },
-  {
-    title: "Blog CMS",
-    description: "System zarządzania treścią z edytorem markdown i optymalizacją SEO.",
-    tech: ["Next.js", "MDX", "Vercel"],
-    github: "https://github.com",
-    live: "https://example.com",
-    span: "md:col-span-2",
-    accent: "accent",
-  },
-];
 
 const accentBorder: Record<string, string> = {
   primary: "hover:border-primary/40",
@@ -62,6 +28,42 @@ const accentDot: Record<string, string> = {
 
 const ProjectsSection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const { t } = useTranslation();
+
+  const projects: Project[] = [
+    {
+      title: t("proj_title_1"),
+      description: t("proj_desc_1"),
+      tech: ["React", "Node.js", "PostgreSQL", "Stripe"],
+      github: "https://github.com",
+      live: "https://example.com",
+      span: "md:col-span-2",
+      accent: "primary",
+    },
+    {
+      title: t("proj_title_2"),
+      description: t("proj_desc_2"),
+      tech: ["TypeScript", "Next.js", "Prisma"],
+      github: "https://github.com",
+      accent: "emerald",
+    },
+    {
+      title: t("proj_title_3"),
+      description: t("proj_desc_3"),
+      tech: ["React", "OpenWeather API", "Tailwind"],
+      live: "https://example.com",
+      accent: "cyan",
+    },
+    {
+      title: t("proj_title_4"),
+      description: t("proj_desc_4"),
+      tech: ["Next.js", "MDX", "Vercel"],
+      github: "https://github.com",
+      live: "https://example.com",
+      span: "md:col-span-2",
+      accent: "accent",
+    },
+  ];
 
   return (
     <section id="projects" className="py-24 bg-gradient-section">
@@ -71,19 +73,18 @@ const ProjectsSection = () => {
             isVisible ? "animate-fade-in" : "opacity-0"
           }`}
         >
-          <span className="text-gradient">// </span>Projekty
+          <span className="text-gradient">// </span>{t("nav_projects")}
         </h2>
 
         <div className="grid md:grid-cols-3 gap-4">
           {projects.map((project, i) => (
             <div
-              key={project.title}
+              key={i}
               className={`group p-6 rounded-xl bg-card border border-border transition-all ${
                 accentBorder[project.accent]
               } ${project.span || ""} ${isVisible ? "animate-scale-in" : "opacity-0"}`}
               style={{ animationDelay: `${i * 0.1}s` }}
             >
-              {/* Color indicator */}
               <div className="flex items-center gap-2 mb-4">
                 <div className={`w-2 h-2 rounded-full ${accentDot[project.accent]}`} />
                 <h3 className="font-heading text-lg font-semibold">{project.title}</h3>

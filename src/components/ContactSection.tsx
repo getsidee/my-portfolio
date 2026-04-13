@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { Github, Linkedin, Mail, Send } from "lucide-react";
 import { useScrollAnimation } from "./useScrollAnimation";
+import { useTranslation } from "react-i18next";
 
 const ContactSection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const { t } = useTranslation();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState(""); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("Wysyłanie...");
+    setStatus(t("contact_status_sending"));
 
-    
     const formData = {
       ...form,
       access_key: "41fc8368-e927-4faf-ae1c-c0faf7286f6e", 
@@ -31,14 +32,14 @@ const ContactSection = () => {
       const result = await response.json();
 
       if (result.success) {
-        setStatus("Wiadomość wysłana pomyślnie!");
-        setForm({ name: "", email: "", message: "" }); // Очистка форми
+        setStatus(t("contact_status_success"));
+        setForm({ name: "", email: "", message: "" });
       } else {
-        setStatus("Błąd podczas wysyłania. Spróbuj ponownie.");
+        setStatus(t("contact_status_error"));
       }
     } catch (error) {
       console.error(error);
-      setStatus("Coś poszło nie tak...");
+      setStatus(t("contact_status_something_wrong"));
     }
   };
 
@@ -50,7 +51,7 @@ const ContactSection = () => {
             isVisible ? "animate-fade-in" : "opacity-0"
           }`}
         >
-          <span className="text-gradient">// </span>Kontakt
+          <span className="text-gradient">// </span>{t("nav_contact")}
         </h2>
 
         <div className="grid md:grid-cols-2 gap-12 max-w-4xl">
@@ -59,8 +60,7 @@ const ContactSection = () => {
             style={{ animationDelay: "0.1s" }}
           >
             <p className="text-muted-foreground leading-relaxed">
-              Chcesz omówić projekt lub po prostu się przywitać? Napisz do mnie —
-              zawsze chętnie poznaję nowych ludzi i ciekawe wyzwania.
+              {t("contact_description")}
             </p>
 
             <div className="space-y-4">
@@ -97,7 +97,7 @@ const ContactSection = () => {
             <input
               type="text"
               name="name" 
-              placeholder="Twoje imię"
+              placeholder={t("contact_placeholder_name")}
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -106,7 +106,7 @@ const ContactSection = () => {
             <input
               type="email"
               name="email" 
-              placeholder="Email"
+              placeholder={t("contact_placeholder_email")}
               required
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -114,7 +114,7 @@ const ContactSection = () => {
             />
             <textarea
               name="message" 
-              placeholder="Wiadomość"
+              placeholder={t("contact_placeholder_message")}
               required
               rows={4}
               value={form.message}
@@ -125,10 +125,9 @@ const ContactSection = () => {
               type="submit"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-mono text-sm hover:opacity-90 transition-all glow-primary"
             >
-              Wyślij <Send size={16} />
+              {t("contact_button_send")} <Send size={16} />
             </button>
             
-            {/* статуса відправки */}
             {status && <p className="text-sm font-mono mt-2 text-primary">{status}</p>}
           </form>
         </div>
