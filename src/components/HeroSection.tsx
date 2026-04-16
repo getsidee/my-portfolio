@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"; 
 import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { motion, Variants, AnimatePresence } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { client } from "../lib/sanity"; 
+import LogoIcon from "./LogoIcon"; 
 
 interface HeroData {
   name: string;
@@ -63,7 +64,7 @@ const HeroSection = () => {
 
   return (
     <section className="min-h-screen flex items-center justify-center pt-16 bg-gradient-hero relative overflow-hidden">
-      {/* Оптимізовані фонові плями (менший радіус blur для iPhone) */}
+      {/* Оптимізовані фонові плями */}
       <motion.div 
         animate={{ scale: [1, 1.05, 1], opacity: [0.1, 0.15, 0.1] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
@@ -83,19 +84,35 @@ const HeroSection = () => {
           className="max-w-3xl mx-auto text-center space-y-6"
           style={{ willChange: "transform, opacity" }}
         >
-          {/* Logo блок з апаратним прискоренням */}
-          <motion.div variants={itemVariants} className="relative w-24 h-24 md:w-28 md:h-28 mx-auto">
-            <motion.div
-              animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 rounded-full bg-primary/30 blur-xl"
-            />
-            <div className="relative w-full h-full rounded-full bg-card border-2 border-primary/30 flex items-center justify-center overflow-hidden glow-primary shadow-2xl">
-              <img src="/favicon.svg" alt="Logo" className="w-14 h-14 md:w-16 md:h-16 object-contain" />
-            </div>
+          {/* Logo блок - АНІМОВАНИЙ ТА ЛЕВІТУЮЧИЙ */}
+          <motion.div variants={itemVariants} className="relative w-28 h-28 md:w-32 md:h-32 mx-auto">
+            {/* Статичне фонове світіння навколо лого */}
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-[25px] dark:bg-primary/30" />
+            
+            {/* Контейнер, який плавно плаває вгору-вниз */}
+            <motion.div 
+              animate={{ y: [-6, 6, -6] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="relative w-full h-full"
+              style={{ willChange: "transform" }}
+            >
+              {/* Пунктирне кільце, що крутиться навколо */}
+              <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-[-8px] rounded-full border border-dashed border-primary/40 dark:border-primary/60 pointer-events-none"
+                style={{ willChange: "transform" }}
+              />
+
+              {/* Основний круг з логотипом */}
+              <div className="relative w-full h-full rounded-full bg-card/80 backdrop-blur-md border border-primary/20 flex items-center justify-center overflow-hidden glow-primary shadow-2xl z-10">
+                <LogoIcon 
+                  className="w-16 h-16 md:w-20 md:h-20 text-zinc-900 dark:text-white transition-colors duration-300" 
+                />
+              </div>
+            </motion.div>
           </motion.div>
 
-          {/* Анімовані текстові блоки з ключами мови */}
           <motion.p 
             key={`role-${i18n.language}`}
             variants={itemVariants} 

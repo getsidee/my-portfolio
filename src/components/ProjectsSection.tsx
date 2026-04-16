@@ -13,18 +13,19 @@ interface Project {
   accent: string;
 }
 
-const accentBorder: Record<string, string> = {
-  primary: "hover:border-primary/40 hover:glow-primary/10",
-  emerald: "hover:border-emerald/40 hover:glow-emerald/10",
-  cyan: "hover:border-cyan/40 hover:glow-cyan/10",
-  accent: "hover:border-accent/40 hover:glow-accent/10",
+// Покращені кольорові схеми для ховерів
+const accentStyles: Record<string, string> = {
+  primary: "hover:border-primary/50 hover:shadow-[0_0_20px_rgba(var(--primary),0.15)]",
+  emerald: "hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]",
+  cyan: "hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]",
+  accent: "hover:border-accent/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.15)]",
 };
 
 const accentDot: Record<string, string> = {
-  primary: "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)]",
-  emerald: "bg-emerald shadow-[0_0_8px_rgba(16,185,129,0.6)]",
-  cyan: "bg-cyan shadow-[0_0_8px_rgba(6,182,212,0.6)]",
-  accent: "bg-accent shadow-[0_0_8px_rgba(236,72,153,0.6)]",
+  primary: "bg-primary shadow-[0_0_10px_rgba(var(--primary),0.8)]",
+  emerald: "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]",
+  cyan: "bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)]",
+  accent: "bg-accent shadow-[0_0_10px_rgba(236,72,153,0.8)]",
 };
 
 const ProjectsSection = () => {
@@ -43,9 +44,7 @@ const ProjectsSection = () => {
     }`;
 
     client.fetch(query)
-      .then((data) => {
-        setProjects(data);
-      })
+      .then((data) => setProjects(data))
       .catch((err) => console.error("Sanity fetch error:", err));
   }, []);
 
@@ -59,29 +58,30 @@ const ProjectsSection = () => {
     visible: {
       opacity: 1,
       transition: { 
-        staggerChildren: 0.07,
+        staggerChildren: 0.12, // Трохи повільніше для більш преміального відчуття
         delayChildren: 0.1 
       },
     },
   };
 
   const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 15 },
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
     visible: { 
       opacity: 1, 
       y: 0, 
-      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } 
+      scale: 1,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } 
     },
   };
 
   return (
     <section id="projects" className="py-24 bg-gradient-section relative overflow-hidden">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative z-10">
         <motion.h2
           key={`title-${i18n.language}`}
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
+          viewport={{ once: true }}
           className="font-heading text-3xl md:text-4xl font-bold mb-12"
           style={{ willChange: "transform, opacity" }}
         >
@@ -93,67 +93,75 @@ const ProjectsSection = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.05 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {projects.map((project, i) => (
             <motion.div
-              key={i} // ВИПРАВЛЕНО: Залишили тільки індекс, щоб уникнути зникнення карток
+              key={i}
               variants={cardVariants}
-              whileHover={{ y: -5 }}
+              whileHover={{ 
+                y: -8, 
+                scale: 1.02,
+                transition: { duration: 0.3, ease: "easeOut" }
+              }}
               style={{ willChange: "transform, opacity" }}
-              className={`group p-6 rounded-2xl bg-card border border-border/50 transition-all duration-300 shadow-sm ${
-                accentBorder[project.accent] || accentBorder.primary
-              } ${project.span || ""} flex flex-col h-full`}
+              className={`group relative p-8 rounded-3xl bg-card border border-border/40 transition-all duration-500 flex flex-col h-full ${
+                accentStyles[project.accent] || accentStyles.primary
+              } ${project.span || ""}`}
             >
-              <div className="flex items-center gap-3 mb-4">
+              {/* Декоративний фон для кожної картки */}
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
+
+              <div className="flex items-center gap-4 mb-6 relative">
                 <div className="relative">
                   <motion.div 
-                    animate={{ opacity: [0.4, 1, 0.4] }}
-                    transition={{ duration: 2.5, repeat: Infinity }}
-                    className={`w-2 h-2 rounded-full ${accentDot[project.accent] || accentDot.primary}`} 
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                    className={`w-2.5 h-2.5 rounded-full ${accentDot[project.accent] || accentDot.primary}`} 
                   />
-                  <div className={`absolute inset-0 rounded-full blur-[4px] opacity-50 ${accentDot[project.accent] || accentDot.primary}`} />
                 </div>
-                <h3 className="font-heading text-xl font-bold tracking-tight">
+                <h3 className="font-heading text-xl font-bold tracking-tight group-hover:text-primary transition-colors">
                   {getLangText(project, 'title')}
                 </h3>
               </div>
 
-              <p className="text-sm md:text-base text-muted-foreground mb-6 leading-relaxed flex-grow font-body">
+              <p className="text-muted-foreground mb-8 leading-relaxed flex-grow font-body text-sm md:text-base relative">
                 {getLangText(project, 'description')}
               </p>
 
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-8 relative">
                 {project.tech.map((tech, idx) => (
                   <span
                     key={idx}
-                    className="px-2.5 py-1 text-[10px] uppercase tracking-wider bg-secondary/50 text-secondary-foreground rounded-md font-mono border border-border/50"
+                    className="px-3 py-1 text-[10px] uppercase tracking-wider bg-secondary/30 text-secondary-foreground rounded-full font-mono border border-border/20 backdrop-blur-sm"
                   >
                     {tech}
                   </span>
                 ))}
               </div>
 
-              <div className="flex items-center gap-4 mt-auto">
+              <div className="flex items-center gap-6 mt-auto relative">
                 {project.github && (
-                  <a
+                  <motion.a
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 text-xs font-mono py-2"
+                    whileHover={{ scale: 1.1, x: 2 }}
+                    className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 text-xs font-mono font-bold"
                   >
-                    <Github size={16} /> <span>Code</span>
-                  </a>
+                    <Github size={18} /> <span>Code</span>
+                  </motion.a>
                 )}
                 {project.live && (
-                  <a
+                  <motion.a
                     href={project.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 text-xs font-mono py-2"
+                    whileHover={{ scale: 1.1, x: 2 }}
+                    className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 text-xs font-mono font-bold"
                   >
-                    <ExternalLink size={16} /> <span>Demo</span>
-                  </a>
+                    <ExternalLink size={18} /> <span>Demo</span>
+                  </motion.a>
                 )}
               </div>
             </motion.div>

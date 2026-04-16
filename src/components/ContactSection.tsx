@@ -3,7 +3,7 @@ import { Github, Linkedin, Mail, Send } from "lucide-react";
 import { useScrollAnimation } from "./useScrollAnimation";
 import { useTranslation } from "react-i18next";
 import { client } from "../lib/sanity";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 interface ContactData {
   email: string;
@@ -34,6 +34,15 @@ const ContactSection = () => {
   const getLangText = (fieldPrefix: string) => {
     const lang = i18n.language;
     return contactInfo?.[`${fieldPrefix}_${lang}`] || contactInfo?.[`${fieldPrefix}_en`] || "";
+  };
+
+  const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.1, duration: 0.5, ease: "easeOut" }
+    })
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,77 +78,91 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="py-24 bg-gradient-section relative overflow-hidden">
-      <div className="container mx-auto px-4" ref={ref}>
+      <div className="container mx-auto px-4 relative z-10" ref={ref}>
         <motion.h2 
-          initial={{ opacity: 0, y: 15 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="font-heading text-3xl md:text-4xl font-bold mb-12"
+          initial={{ opacity: 0, x: -30 }}
+          animate={isVisible ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="font-heading text-3xl md:text-4xl font-bold mb-16"
           style={{ willChange: "transform, opacity" }}
         >
           <span className="text-gradient">// </span>{t("nav_contact")}
         </motion.h2>
 
-        <div className="grid md:grid-cols-2 gap-12 max-w-4xl">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={isVisible ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="space-y-6"
-            style={{ willChange: "transform, opacity" }}
-          >
+        <div className="grid md:grid-cols-2 gap-16 max-w-5xl">
+          <div className="space-y-8">
             <AnimatePresence mode="wait">
               <motion.p 
                 key={i18n.language}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="text-muted-foreground leading-relaxed whitespace-pre-line text-base md:text-lg"
+                initial={{ opacity: 0, y: 10 }}
+                animate={isVisible ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5 }}
+                className="text-muted-foreground leading-relaxed whitespace-pre-line text-lg font-body"
               >
                 {getLangText('description') || t("contact_description")}
               </motion.p>
             </AnimatePresence>
 
-            <div className="space-y-4 pt-4">
-              <a href={`mailto:${contactInfo?.email}`} className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-all group py-2">
-                <div className="p-3 rounded-xl bg-rose/10 text-rose group-hover:bg-rose group-hover:text-white transition-all shadow-sm">
-                  <Mail size={20} />
-                </div>
-                <span className="text-sm md:text-base">{contactInfo?.email}</span>
-              </a>
-
-              <a href={contactInfo?.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-all group py-2">
-                <div className="p-3 rounded-xl bg-foreground/10 text-foreground group-hover:bg-foreground group-hover:text-background transition-all shadow-sm">
-                  <Github size={20} />
-                </div>
-                <span className="text-sm md:text-base">{contactInfo?.github?.replace("https://", "")}</span>
-              </a>
-
-              <a href={contactInfo?.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-all group py-2">
-                <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-                  <Linkedin size={20} />
-                </div>
-                <span className="text-sm md:text-base">LinkedIn Profile</span>
-              </a>
+            <div className="space-y-4">
+              {[
+                { 
+                  href: `mailto:${contactInfo?.email}`, 
+                  icon: <Mail size={20} />, 
+                  label: contactInfo?.email,
+                  color: "bg-rose-500/10 text-rose-500" 
+                },
+                { 
+                  href: contactInfo?.github, 
+                  icon: <Github size={20} />, 
+                  label: contactInfo?.github?.replace("https://", ""),
+                  color: "bg-zinc-500/10 text-zinc-500 dark:text-zinc-400" 
+                },
+                { 
+                  href: contactInfo?.linkedin, 
+                  icon: <Linkedin size={20} />, 
+                  label: "LinkedIn Profile",
+                  color: "bg-blue-500/10 text-blue-500" 
+                }
+              ].map((item, i) => (
+                <motion.a 
+                  key={i}
+                  custom={i}
+                  initial="hidden"
+                  animate={isVisible ? "visible" : "hidden"}
+                  variants={cardVariants}
+                  href={item.href} 
+                  target={i > 0 ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-all group p-4 rounded-2xl bg-card/30 border border-border/40 backdrop-blur-sm hover:border-primary/30"
+                >
+                  <div className={`p-3 rounded-xl ${item.color} group-hover:scale-110 transition-transform duration-300`}>
+                    {item.icon}
+                  </div>
+                  <span className="text-sm md:text-base font-mono truncate">{item.label}</span>
+                </motion.a>
+              ))}
             </div>
-          </motion.div>
+          </div>
 
           <motion.form 
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={isVisible ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            initial={{ opacity: 0, x: 30 }}
+            animate={isVisible ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.2 }}
             onSubmit={handleSubmit} 
-            className="space-y-4"
+            className="space-y-4 p-8 rounded-3xl bg-card/50 border border-border/40 backdrop-blur-lg shadow-2xl relative overflow-hidden"
             style={{ willChange: "transform, opacity" }}
           >
-            <div className="space-y-4">
+            {/* Декоративне сяйво всередині форми */}
+            <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="space-y-4 relative">
               <input
                 type="text"
                 placeholder={t("contact_placeholder_name")}
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full px-4 py-4 rounded-xl bg-card border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-[16px]" 
+                className="w-full px-5 py-4 rounded-xl bg-background/50 border border-border focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition-all text-[16px] font-body" 
               />
               <input
                 type="email"
@@ -147,7 +170,7 @@ const ContactSection = () => {
                 required
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-4 rounded-xl bg-card border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-[16px]"
+                className="w-full px-5 py-4 rounded-xl bg-background/50 border border-border focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition-all text-[16px] font-body"
               />
               <textarea
                 placeholder={t("contact_placeholder_message")}
@@ -155,25 +178,31 @@ const ContactSection = () => {
                 rows={4}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="w-full px-4 py-4 rounded-xl bg-card border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none text-[16px]"
+                className="w-full px-5 py-4 rounded-xl bg-background/50 border border-border focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition-all resize-none text-[16px] font-body"
               />
             </div>
-            <button 
+
+            <motion.button 
               type="submit" 
-              className="w-full md:w-auto inline-flex items-center justify-center gap-3 px-10 py-4 bg-primary text-primary-foreground rounded-xl font-mono text-sm hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-[0.97] glow-primary"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-mono text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all glow-primary group"
             >
-              {t("contact_button_send")} <Send size={18} />
-            </button>
+              <span>{t("contact_button_send")}</span>
+              <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </motion.button>
             
             <AnimatePresence>
               {status && (
                 <motion.div 
-                  initial={{ opacity: 0, y: 10 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  exit={{ opacity: 0 }}
-                  className="text-sm font-mono text-primary bg-primary/5 p-4 rounded-xl border border-primary/20 mt-4"
+                  initial={{ opacity: 0, height: 0 }} 
+                  animate={{ opacity: 1, height: "auto" }} 
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
                 >
-                  {status}
+                  <div className="text-sm font-mono text-primary bg-primary/10 p-4 rounded-xl border border-primary/20 mt-4 text-center">
+                    {status}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
