@@ -1,10 +1,11 @@
+import { useEffect, useState } from "react"; 
 import { ExternalLink, Github } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, Variants } from "framer-motion";
+import { client } from "../lib/sanity"; 
 
 interface Project {
-  title: string;
-  description: string;
+  [key: string]: any; 
   tech: string[];
   github?: string;
   live?: string;
@@ -13,163 +14,146 @@ interface Project {
 }
 
 const accentBorder: Record<string, string> = {
-  primary: "hover:border-primary/40",
-  emerald: "hover:border-emerald/40",
-  cyan: "hover:border-cyan/40",
-  accent: "hover:border-accent/40",
+  primary: "hover:border-primary/40 hover:glow-primary/10",
+  emerald: "hover:border-emerald/40 hover:glow-emerald/10",
+  cyan: "hover:border-cyan/40 hover:glow-cyan/10",
+  accent: "hover:border-accent/40 hover:glow-accent/10",
 };
 
 const accentDot: Record<string, string> = {
-  primary: "bg-primary",
-  emerald: "bg-emerald",
-  cyan: "bg-cyan",
-  accent: "bg-accent",
+  primary: "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)]",
+  emerald: "bg-emerald shadow-[0_0_8px_rgba(16,185,129,0.6)]",
+  cyan: "bg-cyan shadow-[0_0_8px_rgba(6,182,212,0.6)]",
+  accent: "bg-accent shadow-[0_0_8px_rgba(236,72,153,0.6)]",
 };
 
 const ProjectsSection = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [projects, setProjects] = useState<Project[]>([]);
 
-  // Анимация для контейнера (каскадное появление карточек)
+  useEffect(() => {
+    const query = `*[_type == "project"] | order(_createdAt desc) {
+      title_ua, title_pl, title_en,
+      description_ua, description_pl, description_en,
+      "tech": coalesce(tags, []), 
+      github,
+      "live": link,
+      "accent": coalesce(accent, "primary"),
+      span
+    }`;
+
+    client.fetch(query)
+      .then((data) => {
+        setProjects(data);
+      })
+      .catch((err) => console.error("Sanity fetch error:", err));
+  }, []);
+
+  const getLangText = (project: Project, fieldPrefix: string) => {
+    const lang = i18n.language;
+    return project[`${fieldPrefix}_${lang}`] || project[`${fieldPrefix}_en`] || "";
+  };
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
+      transition: { 
+        staggerChildren: 0.07,
+        delayChildren: 0.1 
       },
     },
   };
 
-  // Анимация для каждой отдельной карточки
   const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 15 },
     visible: { 
       opacity: 1, 
       y: 0, 
-      transition: { duration: 0.6, ease: "easeOut" } 
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } 
     },
   };
 
-  const projects: Project[] = [
-    {
-      title: t("proj_title_1"),
-      description: t("proj_desc_1"),
-      tech: ["React", "Node.js", "PostgreSQL", "Stripe"],
-      github: "https://github.com",
-      live: "https://example.com",
-      span: "md:col-span-2",
-      accent: "primary",
-    },
-    {
-      title: t("proj_title_2"),
-      description: t("proj_desc_2"),
-      tech: ["TypeScript", "Next.js", "Prisma"],
-      github: "https://github.com",
-      accent: "emerald",
-    },
-    {
-      title: t("proj_title_3"),
-      description: t("proj_desc_3"),
-      tech: ["React", "OpenWeather API", "Tailwind"],
-      live: "https://example.com",
-      accent: "cyan",
-    },
-    {
-      title: t("proj_title_4"),
-      description: t("proj_desc_4"),
-      tech: ["Next.js", "MDX", "Vercel"],
-      github: "https://github.com",
-      live: "https://example.com",
-      span: "md:col-span-2",
-      accent: "accent",
-    },
-  ];
-
   return (
-    <section id="projects" className="py-24 bg-gradient-section">
+    <section id="projects" className="py-24 bg-gradient-section relative overflow-hidden">
       <div className="container mx-auto px-4">
-        {/* Заголовок секции с анимацией появления */}
         <motion.h2
+          key={`title-${i18n.language}`}
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, amount: 0.5 }}
           className="font-heading text-3xl md:text-4xl font-bold mb-12"
+          style={{ willChange: "transform, opacity" }}
         >
           <span className="text-gradient">// </span>{t("nav_projects")}
         </motion.h2>
 
-        {/* Сетка проектов с каскадной анимацией */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid md:grid-cols-3 gap-4"
+          viewport={{ once: true, amount: 0.05 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {projects.map((project, i) => (
             <motion.div
-              key={i}
+              key={i} // ВИПРАВЛЕНО: Залишили тільки індекс, щоб уникнути зникнення карток
               variants={cardVariants}
-              whileHover={{ 
-                y: -8, 
-                transition: { duration: 0.2 } 
-              }}
-              className={`group p-6 rounded-xl bg-card border border-border transition-all ${
-                accentBorder[project.accent]
-              } ${project.span || ""} shadow-sm hover:shadow-xl`}
+              whileHover={{ y: -5 }}
+              style={{ willChange: "transform, opacity" }}
+              className={`group p-6 rounded-2xl bg-card border border-border/50 transition-all duration-300 shadow-sm ${
+                accentBorder[project.accent] || accentBorder.primary
+              } ${project.span || ""} flex flex-col h-full`}
             >
-              <div className="flex items-center gap-2 mb-4">
-                {/* Пульсирующая точка */}
-                <motion.div 
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className={`w-2 h-2 rounded-full ${accentDot[project.accent]}`} 
-                />
-                <h3 className="font-heading text-lg font-semibold">{project.title}</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="relative">
+                  <motion.div 
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 2.5, repeat: Infinity }}
+                    className={`w-2 h-2 rounded-full ${accentDot[project.accent] || accentDot.primary}`} 
+                  />
+                  <div className={`absolute inset-0 rounded-full blur-[4px] opacity-50 ${accentDot[project.accent] || accentDot.primary}`} />
+                </div>
+                <h3 className="font-heading text-xl font-bold tracking-tight">
+                  {getLangText(project, 'title')}
+                </h3>
               </div>
 
-              <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                {project.description}
+              <p className="text-sm md:text-base text-muted-foreground mb-6 leading-relaxed flex-grow font-body">
+                {getLangText(project, 'description')}
               </p>
 
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {project.tech.map((tech) => (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {project.tech.map((tech, idx) => (
                   <span
-                    key={tech}
-                    className="px-2 py-1 text-xs bg-secondary text-secondary-foreground rounded font-mono"
+                    key={idx}
+                    className="px-2.5 py-1 text-[10px] uppercase tracking-wider bg-secondary/50 text-secondary-foreground rounded-md font-mono border border-border/50"
                   >
                     {tech}
                   </span>
                 ))}
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4 mt-auto">
                 {project.github && (
-                  <motion.a
-                    whileHover={{ scale: 1.2, rotate: 5 }}
-                    whileTap={{ scale: 0.9 }}
+                  <a
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="GitHub"
+                    className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 text-xs font-mono py-2"
                   >
-                    <Github size={18} />
-                  </motion.a>
+                    <Github size={16} /> <span>Code</span>
+                  </a>
                 )}
                 {project.live && (
-                  <motion.a
-                    whileHover={{ scale: 1.2, rotate: -5 }}
-                    whileTap={{ scale: 0.9 }}
+                  <a
                     href={project.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Live demo"
+                    className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 text-xs font-mono py-2"
                   >
-                    <ExternalLink size={18} />
-                  </motion.a>
+                    <ExternalLink size={16} /> <span>Demo</span>
+                  </a>
                 )}
               </div>
             </motion.div>
