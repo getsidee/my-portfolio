@@ -31,11 +31,11 @@ const ExperienceSection = () => {
   };
 
   const titleVariants: Variants = {
-    hidden: { opacity: 0, x: -30 },
+    hidden: { opacity: 0, x: -20 },
     visible: { 
       opacity: 1, 
       x: 0, 
-      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } 
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } 
     }
   };
 
@@ -44,117 +44,111 @@ const ExperienceSection = () => {
     visible: {
       opacity: 1,
       transition: { 
-        staggerChildren: 0.3,
-        delayChildren: 0.5 
+        staggerChildren: 0.2, 
+        delayChildren: 0.3 
       },
     },
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, x: 20 },
+    hidden: { opacity: 0, y: 15 },
     visible: {
       opacity: 1,
-      x: 0,
-      transition: { duration: 0.7, ease: "easeOut" }
-    }
-  };
-
-  const lineVariants: Variants = {
-    hidden: { scaleY: 0 },
-    visible: { 
-      scaleY: 1, 
-      transition: { duration: 1.8, ease: [0.22, 1, 0.36, 1] } 
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" }
     }
   };
 
   return (
-    <section id="experience" className="py-32 relative overflow-hidden bg-background transition-colors duration-500">
-      <div className="container mx-auto px-6 relative z-10">
+    <section id="experience" className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500">
+      <div className="container mx-auto px-6 relative z-10 transform-gpu">
         <motion.h2
           key={`title-${i18n.language}`}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.5 }}
           variants={titleVariants}
-          className="font-heading text-4xl md:text-5xl font-black mb-20 tracking-tighter text-foreground"
+          style={{ willChange: "transform, opacity" }}
+          className="font-heading text-4xl md:text-5xl font-black mb-16 md:mb-20 tracking-tighter text-foreground"
         >
           <span className="text-gradient-holo">// </span>{t("nav_experience")}
         </motion.h2>
 
-        <div className="max-w-4xl mx-auto relative pl-10 md:pl-16">
-          {/* Вертикальна лінія таймлайну (адаптивна) */}
+        <div className="max-w-4xl mx-auto relative pl-10 md:pl-16 transform-gpu">
+          {/* Вертикальна лінія таймлайну - ОПТИМІЗОВАНО */}
           <motion.div
-            initial="hidden"
-            whileInView="visible"
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
             viewport={{ once: true }}
-            variants={lineVariants}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
             style={{ 
               originY: 0, 
-              willChange: "transform"
+              willChange: "transform",
+              transform: "translateZ(0)" 
             }}
-            className="absolute left-[2px] md:left-[4px] top-2 w-[3px] h-[calc(100%-20px)] bg-gradient-to-b from-primary via-primary/30 dark:via-primary/20 to-transparent z-0 rounded-full"
+            className="absolute left-[2px] md:left-[4px] top-2 w-[2px] md:w-[3px] h-[calc(100%-20px)] bg-gradient-to-b from-primary via-primary/30 dark:via-primary/20 to-transparent z-0 rounded-full transform-gpu"
           />
 
           <motion.div
             variants={timelineVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            className="space-y-16"
+            viewport={{ once: true, amount: 0.05 }}
+            className="space-y-12 md:space-y-16"
           >
             {experiences.map((exp, i) => (
               <motion.div
                 key={i}
                 variants={itemVariants}
-                className="relative group"
+                style={{ willChange: "transform, opacity" }}
+                className="relative group transform-gpu"
               >
                 {/* Точка таймлайну */}
-                <div className="absolute left-[-49px] md:left-[-63px] top-1.5 z-10">
+                <div className="absolute left-[-49px] md:left-[-63px] top-1.5 z-10 transform-gpu">
                   <motion.div 
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ 
                       type: "spring", 
-                      stiffness: 260, 
-                      damping: 20,
-                      delay: i * 0.2 
+                      stiffness: 200, 
+                      damping: 15,
+                      delay: i * 0.1 
                     }}
-                    className={`w-6 h-6 rounded-full ${exp.color.includes('bg-') ? exp.color : 'bg-primary'} border-4 border-background shadow-lg relative`}
+                    className={`w-5 h-5 md:w-6 md:h-6 rounded-full ${exp.color.includes('bg-') ? exp.color : 'bg-primary'} border-4 border-background shadow-md relative`}
                   >
-                    {/* Адаптивне світіння */}
+                    {/* Пульсація тільки для десктопа */}
                     {i === 0 && (
                       <motion.div 
-                        animate={{ scale: [1, 1.6, 1], opacity: [0.4, 0, 0.4] }}
+                        animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
                         transition={{ duration: 2, repeat: Infinity }}
-                        className="absolute inset-0 rounded-full bg-primary/40 -z-10"
+                        className="absolute inset-0 rounded-full bg-primary/40 -z-10 hidden md:block"
                       />
                     )}
                   </motion.div>
                 </div>
 
-                <div className="flex flex-col">
-                  {/* Період - Чіткіший у світлій темі */}
+                <div className="flex flex-col transform-gpu">
                   <motion.span 
-                    className="font-mono text-xs md:text-sm text-primary font-bold tracking-widest mb-3"
+                    className="font-mono text-xs md:text-sm text-primary font-bold tracking-widest mb-2"
                   >
                     {getLangText(exp, 'period')}
                   </motion.span>
                   
-                  <h3 className="font-heading text-2xl md:text-3xl font-black mb-2 text-foreground group-hover:text-primary transition-colors duration-300 tracking-tight">
+                  <h3 className="font-heading text-xl md:text-3xl font-black mb-2 text-foreground group-hover:text-primary transition-colors duration-300 tracking-tight">
                     {getLangText(exp, 'role')}
                   </h3>
 
-                  <div className="flex items-center gap-3 mb-6">
-                    <span className="w-6 h-[2px] bg-primary/40" />
-                    <span className="font-mono text-sm md:text-base text-foreground/70 dark:text-muted-foreground italic font-medium">
+                  <div className="flex items-center gap-3 mb-4 md:mb-6">
+                    <span className="w-4 md:w-6 h-[2px] bg-primary/40" />
+                    <span className="font-mono text-xs md:text-base text-foreground/70 dark:text-muted-foreground italic font-medium">
                       {exp.company}
                     </span>
                   </div>
 
-                  {/* Текстовий блок - Оновлений скляний стиль */}
-                  <div className="relative p-6 md:p-8 rounded-[28px] glass-card border-white/60 dark:border-white/10 bg-white/30 dark:bg-white/[0.02] shadow-sm hover:shadow-xl transition-all duration-500">
-                    <p className="text-foreground/80 dark:text-muted-foreground leading-relaxed whitespace-pre-line font-body text-base md:text-lg font-medium">
+                  {/* Текстовий блок - ОПТИМІЗОВАНО */}
+                  <div className="relative p-5 md:p-8 rounded-[20px] md:rounded-[28px] glass-card border-white/60 dark:border-white/10 bg-white/30 dark:bg-white/[0.02] shadow-sm transform-gpu">
+                    <p className="text-foreground/80 dark:text-muted-foreground leading-relaxed whitespace-pre-line font-body text-sm md:text-lg font-medium">
                       {getLangText(exp, 'description')}
                     </p>
                   </div>

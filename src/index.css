@@ -29,7 +29,7 @@
   }
 
   .dark {
-    --background: 240 10% 4%; /* Глибокий темний */
+    --background: 240 10% 4%;
     --foreground: 40 14% 94%;
     --card: 240 8% 8%;
     --card-foreground: 40 14% 94%;
@@ -49,23 +49,43 @@
     color: hsl(var(--foreground));
     font-family: 'Work Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
-    transition: background-color 0.3s ease;
+    /* Оптимізація: прибираємо transition для фону на body, це важко для мобільних */
+    @media (min-width: 768px) {
+      transition: background-color 0.3s ease;
+    }
   }
 }
 
 @layer components {
   .glass-card {
-    backdrop-filter: blur(20px);
-    transition: all 0.5s ease;
+    /* Оптимізація: на мобільних блюр менший (8px), на десктопі лишаємо 20px */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    
+    @media (min-width: 768px) {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    
+    /* Змушуємо GPU обробляти цей елемент */
+    transform: translateZ(0);
+    will-change: transform, opacity;
+
     background-color: rgba(255, 255, 255, 0.45);
     border: 1px solid rgba(255, 255, 255, 0.7);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+    box-shadow: 0 4px 12px 0 rgba(31, 38, 135, 0.04);
   }
 
   .dark .glass-card {
     background-color: rgba(15, 15, 20, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    @media (min-width: 768px) {
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    }
   }
 
   .text-gradient-holo {
@@ -74,37 +94,41 @@
     color: transparent;
     background-image: linear-gradient(to right, hsl(var(--primary)), #10b981, #06b6d4);
     background-size: 200% 200%;
+    /* Анімація градієнта на мобільних може "їсти" процесор, лишаємо її тільки для потужних пристроїв або спрощуємо */
     animation: gradient-x 15s ease infinite;
+    transform: translateZ(0);
   }
 }
 
 @layer utilities {
   .bg-gradient-hero {
     background-color: hsl(var(--background));
-    background-repeat: no-repeat;
+    /* Оптимізація: масивні градієнти на мобілках краще спростити */
+    background-attachment: scroll; 
   }
 
-  /* Світла тема: залишається м'якою */
   :not(.dark) .bg-gradient-hero {
-    background-image: 
-      radial-gradient(at 0% 0%, hsla(220, 80%, 90%, 0.5) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, hsla(260, 70%, 90%, 0.4) 0px, transparent 50%),
-      radial-gradient(circle at 50% 0%, hsl(var(--primary) / 0.15), transparent 60%);
+    background-image: radial-gradient(circle at 50% 0%, hsl(var(--primary) / 0.1), transparent 70%);
+    @media (min-width: 768px) {
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(220, 80%, 90%, 0.5) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(260, 70%, 90%, 0.4) 0px, transparent 50%),
+        radial-gradient(circle at 50% 0%, hsl(var(--primary) / 0.15), transparent 60%);
+    }
   }
 
-  /* ТЕМНА ТЕМА: Глибокий та дорогий градієнт */
   .dark .bg-gradient-hero {
-    background-image: 
-      /* М'який акцент зверху зліва (темно-синій) */
-      radial-gradient(at 0% 0%, hsla(220, 100%, 10%, 0.4) 0px, transparent 45%),
-      /* М'який акцент знизу справа (глибокий фіолетовий) */
-      radial-gradient(at 100% 100%, hsla(262, 80%, 10%, 0.3) 0px, transparent 45%),
-      /* Ледь помітне центральне сяйво, щоб текст "дихав" */
-      radial-gradient(circle at 50% 30%, hsla(var(--primary), 0.08), transparent 60%) !important;
+    background-image: radial-gradient(circle at 50% 30%, hsla(var(--primary), 0.08), transparent 60%) !important;
+    @media (min-width: 768px) {
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(220, 100%, 10%, 0.4) 0px, transparent 45%),
+        radial-gradient(at 100% 100%, hsla(262, 80%, 10%, 0.3) 0px, transparent 45%),
+        radial-gradient(circle at 50% 30%, hsla(var(--primary), 0.08), transparent 60%) !important;
+    }
   }
 
   .animate-gradient-x {
-    animation: gradient-x 15s ease infinite;
+    will-change: background-position;
   }
 }
 

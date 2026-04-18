@@ -39,16 +39,16 @@ const HeroSection = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }, // Трохи пришвидшено для мобільних
     },
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 15 },
+    hidden: { opacity: 0, y: 10 },
     visible: { 
       opacity: 1, 
       y: 0, 
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } 
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } 
     },
   };
 
@@ -65,28 +65,28 @@ const HeroSection = () => {
   return (
     <section className="min-h-screen flex items-center justify-center pt-16 bg-gradient-hero relative overflow-hidden transition-colors duration-500">
       
-      {/* СВІТЛА ТЕМА: М'які акценти */}
-      <div className="absolute inset-0 block dark:hidden pointer-events-none">
-        <div className="absolute top-[-5%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[5%] right-[-5%] w-[45%] h-[45%] bg-accent/10 blur-[100px] rounded-full" />
+      {/* СВІТЛА ТЕМА: Оптимізовані плями (менший блюр на мобільних) */}
+      <div className="absolute inset-0 block dark:hidden pointer-events-none transform-gpu">
+        <div className="absolute top-[-5%] left-[-10%] w-[300px] md:w-[50%] h-[300px] md:h-[50%] bg-primary/10 blur-[60px] md:blur-[120px] rounded-full" />
+        <div className="absolute bottom-[5%] right-[-5%] w-[250px] md:w-[45%] h-[250px] md:h-[45%] bg-accent/10 blur-[50px] md:blur-[100px] rounded-full" />
       </div>
 
-      {/* ТЕМНА ТЕМА: Глибока анімована туманність (майже невидима, але створює об'єм) */}
+      {/* ТЕМНА ТЕМА: Спрощена анімація для мобільних (тільки opacity) */}
       <motion.div 
         animate={{ 
-          scale: [1, 1.2, 1], 
-          opacity: [0.03, 0.06, 0.03], 
+          opacity: [0.03, 0.05, 0.03], 
         }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[-15%] right-[-5%] w-[800px] h-[800px] bg-primary/20 rounded-full blur-[160px] pointer-events-none hidden dark:block" 
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        style={{ willChange: "opacity" }}
+        className="absolute top-[-15%] right-[-5%] w-[350px] md:w-[800px] h-[350px] md:h-[800px] bg-primary/20 rounded-full blur-[80px] md:blur-[160px] pointer-events-none hidden dark:block transform-gpu" 
       />
       <motion.div 
         animate={{ 
-          scale: [1.2, 1, 1.2], 
-          opacity: [0.02, 0.05, 0.02],
+          opacity: [0.02, 0.04, 0.02],
         }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[-10%] left-[-10%] w-[900px] h-[900px] bg-accent/10 rounded-full blur-[180px] pointer-events-none hidden dark:block" 
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        style={{ willChange: "opacity" }}
+        className="absolute bottom-[-10%] left-[-10%] w-[400px] md:w-[900px] h-[400px] md:h-[900px] bg-accent/10 rounded-full blur-[90px] md:blur-[180px] pointer-events-none hidden dark:block transform-gpu" 
       />
 
       <div className="container mx-auto px-4 relative z-10">
@@ -94,27 +94,28 @@ const HeroSection = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="max-w-3xl mx-auto text-center space-y-8"
+          className="max-w-3xl mx-auto text-center space-y-8 transform-gpu"
         >
           {/* Logo блок */}
-          <motion.div variants={itemVariants} className="relative w-32 h-32 md:w-36 md:h-36 mx-auto">
-            {/* Мінімальне світіння під лого */}
-            <div className="absolute inset-4 rounded-full bg-primary/20 blur-[20px] dark:bg-primary/10 dark:blur-[15px] animate-pulse" />
+          <motion.div variants={itemVariants} className="relative w-32 h-32 md:w-36 md:h-36 mx-auto transform-gpu">
+            <div className="absolute inset-4 rounded-full bg-primary/10 blur-[15px] animate-pulse" />
             
             <motion.div 
-              animate={{ y: [-8, 8, -8] }}
+              animate={{ y: [-5, 5, -5] }} // Зменшена амплітуда
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              style={{ willChange: "transform" }}
               className="relative w-full h-full"
             >
               <motion.div 
                 animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-[-12px] rounded-full border border-dashed border-primary/20 dark:border-primary/40 pointer-events-none"
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                style={{ willChange: "transform" }}
+                className="absolute inset-[-8px] md:inset-[-12px] rounded-full border border-dashed border-primary/20 dark:border-primary/40 pointer-events-none"
               />
 
-              <div className="relative w-full h-full rounded-full glass-card flex items-center justify-center border-white/40 dark:border-white/5 shadow-xl dark:shadow-none bg-white/10 dark:bg-zinc-900/40">
+              <div className="relative w-full h-full rounded-full glass-card flex items-center justify-center border-white/40 dark:border-white/5 shadow-xl dark:shadow-none bg-white/10 dark:bg-zinc-900/40 transform-gpu">
                 <LogoIcon 
-                  className="w-16 h-16 md:w-20 md:h-20 text-zinc-900 dark:text-white transition-colors duration-300" 
+                  className="w-14 h-14 md:w-20 md:h-20 text-zinc-900 dark:text-white transition-colors duration-300" 
                 />
               </div>
             </motion.div>
@@ -122,44 +123,41 @@ const HeroSection = () => {
 
           <div className="space-y-4">
             <motion.p 
-              key={`role-${i18n.language}`}
               variants={itemVariants} 
-              className="font-mono text-xs md:text-sm text-primary font-bold tracking-[0.4em] uppercase"
+              className="font-mono text-[10px] md:text-sm text-primary font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase"
             >
               {getLangText('role') || t("hero_student")}
             </motion.p>
 
             <motion.h1 
-              key={`name-${i18n.language}`}
               variants={itemVariants} 
-              className="font-heading text-5xl md:text-7xl font-black leading-tight tracking-tighter text-foreground"
+              className="font-heading text-4xl md:text-7xl font-black leading-tight tracking-tighter text-foreground transform-gpu"
             >
               {renderName()}
             </motion.h1>
 
             <motion.p 
-              key={`desc-${i18n.language}`}
               variants={itemVariants} 
-              className="text-base md:text-xl text-foreground/80 dark:text-foreground/60 max-w-xl mx-auto font-body font-medium leading-relaxed"
+              className="text-sm md:text-xl text-foreground/70 dark:text-foreground/60 max-w-xl mx-auto font-body font-medium leading-relaxed px-4"
             >
               {getLangText('description') || t("hero_description")}
             </motion.p>
           </div>
 
-          <motion.div variants={itemVariants} className="flex items-center justify-center gap-5 pt-4">
+          <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 md:gap-5 pt-4">
             {[
-              { href: hero?.github || "https://github.com/getsidee", icon: <Github size={22} />, label: "GitHub" },
-              { href: hero?.linkedin || "https://www.linkedin.com/", icon: <Linkedin size={22} />, label: "LinkedIn" },
-              { href: hero?.email ? `mailto:${hero.email}` : "mailto:medvedchukbogdan@gmail.com", icon: <Mail size={22} />, label: "Email" }
+              { href: hero?.github || "https://github.com/getsidee", icon: <Github size={20} className="md:w-[22px]" />, label: "GitHub" },
+              { href: hero?.linkedin || "https://www.linkedin.com/", icon: <Linkedin size={20} className="md:w-[22px]" />, label: "LinkedIn" },
+              { href: hero?.email ? `mailto:${hero.email}` : "mailto:medvedchukbogdan@gmail.com", icon: <Mail size={20} className="md:w-[22px]" />, label: "Email" }
             ].map((link, i) => (
               <motion.a
                 key={i}
                 href={link.href}
                 target={link.label !== "Email" ? "_blank" : undefined}
                 rel="noopener noreferrer"
-                whileHover={{ y: -5, scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-4 rounded-2xl glass-card border-white/20 dark:border-white/5 transition-all shadow-md dark:shadow-none text-foreground/80 hover:text-primary"
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                className="p-3.5 md:p-4 rounded-2xl glass-card border-white/20 dark:border-white/5 transition-all text-foreground/80 hover:text-primary transform-gpu shadow-lg"
                 aria-label={link.label}
               >
                 {link.icon}
@@ -170,10 +168,10 @@ const HeroSection = () => {
           <motion.a
             variants={itemVariants}
             href="#about"
-            className="inline-flex flex-col items-center gap-3 mt-12 text-[10px] uppercase tracking-[0.4em] text-foreground/40 hover:text-primary transition-colors font-mono font-bold"
+            className="inline-flex flex-col items-center gap-2 mt-8 md:mt-12 text-[9px] md:text-[10px] uppercase tracking-[0.4em] text-foreground/40 hover:text-primary transition-colors font-mono font-bold"
           >
             <span>{t("hero_more")}</span>
-            <ArrowDown size={18} className="animate-bounce text-primary" />
+            <ArrowDown size={16} className="animate-bounce text-primary" />
           </motion.a>
         </motion.div>
       </div>
