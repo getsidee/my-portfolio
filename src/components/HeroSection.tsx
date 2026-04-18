@@ -53,27 +53,40 @@ const HeroSection = () => {
   };
 
   const renderName = () => {
-    if (!hero?.name) return <>Bohdan <span className="text-gradient">Medvedchuk</span></>;
+    if (!hero?.name) return <>Bohdan <span className="text-gradient-holo">Medvedchuk</span></>;
     const parts = hero.name.split(' ');
     return (
       <span key={i18n.language}>
-        {parts[0]} <span className="text-gradient">{parts.slice(1).join(' ')}</span>
+        {parts[0]} <span className="text-gradient-holo">{parts.slice(1).join(' ')}</span>
       </span>
     );
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center pt-16 bg-gradient-hero relative overflow-hidden">
-      {/* Оптимізовані фонові плями */}
+    <section className="min-h-screen flex items-center justify-center pt-16 bg-gradient-hero relative overflow-hidden transition-colors duration-500">
+      
+      {/* СВІТЛА ТЕМА: М'які акценти */}
+      <div className="absolute inset-0 block dark:hidden pointer-events-none">
+        <div className="absolute top-[-5%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[5%] right-[-5%] w-[45%] h-[45%] bg-accent/10 blur-[100px] rounded-full" />
+      </div>
+
+      {/* ТЕМНА ТЕМА: Глибока анімована туманність (майже невидима, але створює об'єм) */}
       <motion.div 
-        animate={{ scale: [1, 1.05, 1], opacity: [0.1, 0.15, 0.1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-20 right-[15%] w-72 h-72 bg-primary/20 rounded-full blur-[80px] pointer-events-none" 
+        animate={{ 
+          scale: [1, 1.2, 1], 
+          opacity: [0.03, 0.06, 0.03], 
+        }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-[-15%] right-[-5%] w-[800px] h-[800px] bg-primary/20 rounded-full blur-[160px] pointer-events-none hidden dark:block" 
       />
       <motion.div 
-        animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-20 left-[10%] w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none" 
+        animate={{ 
+          scale: [1.2, 1, 1.2], 
+          opacity: [0.02, 0.05, 0.02],
+        }}
+        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-[-10%] left-[-10%] w-[900px] h-[900px] bg-accent/10 rounded-full blur-[180px] pointer-events-none hidden dark:block" 
       />
 
       <div className="container mx-auto px-4 relative z-10">
@@ -81,31 +94,25 @@ const HeroSection = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="max-w-3xl mx-auto text-center space-y-6"
-          style={{ willChange: "transform, opacity" }}
+          className="max-w-3xl mx-auto text-center space-y-8"
         >
-          {/* Logo блок - АНІМОВАНИЙ ТА ЛЕВІТУЮЧИЙ */}
-          <motion.div variants={itemVariants} className="relative w-28 h-28 md:w-32 md:h-32 mx-auto">
-            {/* Статичне фонове світіння навколо лого */}
-            <div className="absolute inset-0 rounded-full bg-primary/20 blur-[25px] dark:bg-primary/30" />
+          {/* Logo блок */}
+          <motion.div variants={itemVariants} className="relative w-32 h-32 md:w-36 md:h-36 mx-auto">
+            {/* Мінімальне світіння під лого */}
+            <div className="absolute inset-4 rounded-full bg-primary/20 blur-[20px] dark:bg-primary/10 dark:blur-[15px] animate-pulse" />
             
-            {/* Контейнер, який плавно плаває вгору-вниз */}
             <motion.div 
-              animate={{ y: [-6, 6, -6] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              animate={{ y: [-8, 8, -8] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="relative w-full h-full"
-              style={{ willChange: "transform" }}
             >
-              {/* Пунктирне кільце, що крутиться навколо */}
               <motion.div 
                 animate={{ rotate: 360 }}
-                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-[-8px] rounded-full border border-dashed border-primary/40 dark:border-primary/60 pointer-events-none"
-                style={{ willChange: "transform" }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-[-12px] rounded-full border border-dashed border-primary/20 dark:border-primary/40 pointer-events-none"
               />
 
-              {/* Основний круг з логотипом */}
-              <div className="relative w-full h-full rounded-full bg-card/80 backdrop-blur-md border border-primary/20 flex items-center justify-center overflow-hidden glow-primary shadow-2xl z-10">
+              <div className="relative w-full h-full rounded-full glass-card flex items-center justify-center border-white/40 dark:border-white/5 shadow-xl dark:shadow-none bg-white/10 dark:bg-zinc-900/40">
                 <LogoIcon 
                   className="w-16 h-16 md:w-20 md:h-20 text-zinc-900 dark:text-white transition-colors duration-300" 
                 />
@@ -113,46 +120,47 @@ const HeroSection = () => {
             </motion.div>
           </motion.div>
 
-          <motion.p 
-            key={`role-${i18n.language}`}
-            variants={itemVariants} 
-            className="font-mono text-xs md:text-sm text-primary tracking-widest uppercase"
-          >
-            {getLangText('role') || t("hero_student")}
-          </motion.p>
+          <div className="space-y-4">
+            <motion.p 
+              key={`role-${i18n.language}`}
+              variants={itemVariants} 
+              className="font-mono text-xs md:text-sm text-primary font-bold tracking-[0.4em] uppercase"
+            >
+              {getLangText('role') || t("hero_student")}
+            </motion.p>
 
-          <motion.h1 
-            key={`name-${i18n.language}`}
-            variants={itemVariants} 
-            className="font-heading text-4xl md:text-6xl font-bold leading-tight tracking-tight"
-          >
-            {renderName()}
-          </motion.h1>
+            <motion.h1 
+              key={`name-${i18n.language}`}
+              variants={itemVariants} 
+              className="font-heading text-5xl md:text-7xl font-black leading-tight tracking-tighter text-foreground"
+            >
+              {renderName()}
+            </motion.h1>
 
-          <motion.p 
-            key={`desc-${i18n.language}`}
-            variants={itemVariants} 
-            className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto font-body whitespace-pre-line"
-          >
-            {getLangText('description') || t("hero_description")}
-          </motion.p>
+            <motion.p 
+              key={`desc-${i18n.language}`}
+              variants={itemVariants} 
+              className="text-base md:text-xl text-foreground/80 dark:text-foreground/60 max-w-xl mx-auto font-body font-medium leading-relaxed"
+            >
+              {getLangText('description') || t("hero_description")}
+            </motion.p>
+          </div>
 
-          <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 pt-2">
+          <motion.div variants={itemVariants} className="flex items-center justify-center gap-5 pt-4">
             {[
-              { href: hero?.github || "https://github.com/getsidee", icon: <Github size={20} />, label: "GitHub" },
-              { href: hero?.linkedin || "https://www.linkedin.com/", icon: <Linkedin size={20} />, label: "LinkedIn" },
-              { href: hero?.email ? `mailto:${hero.email}` : "mailto:medvedchukbogdan@gmail.com", icon: <Mail size={20} />, label: "Email" }
+              { href: hero?.github || "https://github.com/getsidee", icon: <Github size={22} />, label: "GitHub" },
+              { href: hero?.linkedin || "https://www.linkedin.com/", icon: <Linkedin size={22} />, label: "LinkedIn" },
+              { href: hero?.email ? `mailto:${hero.email}` : "mailto:medvedchukbogdan@gmail.com", icon: <Mail size={22} />, label: "Email" }
             ].map((link, i) => (
               <motion.a
                 key={i}
                 href={link.href}
                 target={link.label !== "Email" ? "_blank" : undefined}
                 rel="noopener noreferrer"
-                whileHover={{ y: -3, scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-3 rounded-xl bg-card border border-border/60 hover:border-primary/50 hover:glow-primary transition-all active:bg-primary/5"
+                whileHover={{ y: -5, scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-4 rounded-2xl glass-card border-white/20 dark:border-white/5 transition-all shadow-md dark:shadow-none text-foreground/80 hover:text-primary"
                 aria-label={link.label}
-                style={{ willChange: "transform" }}
               >
                 {link.icon}
               </motion.a>
@@ -162,10 +170,10 @@ const HeroSection = () => {
           <motion.a
             variants={itemVariants}
             href="#about"
-            className="inline-flex items-center gap-2 mt-8 text-sm text-muted-foreground hover:text-primary transition-colors font-mono"
-            style={{ willChange: "transform" }}
+            className="inline-flex flex-col items-center gap-3 mt-12 text-[10px] uppercase tracking-[0.4em] text-foreground/40 hover:text-primary transition-colors font-mono font-bold"
           >
-            {t("hero_more")} <ArrowDown size={16} className="animate-bounce" />
+            <span>{t("hero_more")}</span>
+            <ArrowDown size={18} className="animate-bounce text-primary" />
           </motion.a>
         </motion.div>
       </div>
