@@ -13,6 +13,7 @@ i18n
           nav_about: "O mnie",
           nav_projects: "Projekty",
           nav_experience: "Doświadczenie",
+          nav_process: "Podejście", // ДОДАНО
           nav_contact: "Kontakt",
           // Hero
           hero_student: "Student I roku",
@@ -65,6 +66,7 @@ i18n
           nav_about: "Про мене",
           nav_projects: "Проєкти",
           nav_experience: "Досвід",
+          nav_process: "Підхід", // ДОДАНО
           nav_contact: "Контакти",
           hero_student: "Студент I курсу",
           hero_description: "Я студент Познанського економічного університету за спеціальністю «Інформатика та аналітика даних». Мій попередній професійний досвід навчив мене чудовій організації праці та комунікації. Зараз я повністю зосереджений на технологіях: програмую на Python та веб-технологіях (HTML/CSS), вивчаю Java та створюю естетичні графічні проєкти.",
@@ -111,6 +113,7 @@ i18n
           nav_about: "About me",
           nav_projects: "Projects",
           nav_experience: "Experience",
+          nav_process: "Approach", // ДОДАНО
           nav_contact: "Contact",
           hero_student: "1st year student",
           hero_description: "I am a student at the Poznań University of Economics and Business, majoring in Informatics and Data Analytics. My previous professional experience has taught me great work organization and communication. Currently, I am fully focused on technologies: coding in Python and web technologies (HTML/CSS), learning Java, and creating aesthetic graphic designs.",

@@ -1,8 +1,9 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
-import ProjectsSection from "@/components/ProjectsSection";
 import ExperienceSection from "@/components/ExperienceSection";
+import ProcessSection from "@/components/ProcessSection"; // Додано імпорт
+import ProjectsSection from "@/components/ProjectsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 
@@ -11,8 +12,12 @@ const Index = () => (
     <Navbar />
     <HeroSection />
     <AboutSection />
-    <ProjectsSection />
     <ExperienceSection />
+    
+    {/* Новий розділ: Мій підхід */}
+    <ProcessSection />
+    
+    <ProjectsSection />
     <ContactSection />
     <Footer />
   </div>

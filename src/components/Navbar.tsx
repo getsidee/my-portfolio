@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Menu, X, ChevronDown, Globe } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { useTranslation } from "react-i18next";
@@ -12,14 +12,12 @@ const Navbar = () => {
   
   const { scrollY, scrollYProgress } = useScroll();
   
-  // Оптимізація пружини: трохи більше damping для плавності без тремтіння
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001
   });
 
-  // Оптимізований обробник скролу
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (latest > 50 && !isScrolled) setIsScrolled(true);
     if (latest <= 50 && isScrolled) setIsScrolled(false);
@@ -28,6 +26,7 @@ const Navbar = () => {
   const links = [
     { href: "#about", label: t("nav_about") },
     { href: "#experience", label: t("nav_experience") },
+    { href: "#process", label: t("nav_process", { defaultValue: "Підхід" }) }, // НОВИЙ ПУНКТ
     { href: "#projects", label: t("nav_projects") },
     { href: "#contact", label: t("nav_contact") },
   ];
@@ -46,15 +45,15 @@ const Navbar = () => {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        style={{ willChange: "transform, opacity" }} // Hardware acceleration
+        style={{ willChange: "transform, opacity" }}
         className={`
           pointer-events-auto
           relative flex items-center justify-between
           w-full px-5 md:px-10 py-3
           rounded-[24px] md:rounded-full border transition-all duration-300
           ${isScrolled 
-            ? "max-w-4xl bg-background/80 dark:bg-background/70 backdrop-blur-lg md:backdrop-blur-2xl border-primary/30 shadow-2xl shadow-primary/5" 
-            : "max-w-5xl bg-transparent border-transparent"
+            ? "max-w-5xl bg-background/80 dark:bg-background/70 backdrop-blur-lg md:backdrop-blur-2xl border-primary/30 shadow-2xl shadow-primary/5" 
+            : "max-w-6xl bg-transparent border-transparent"
           }
         `}
       >
@@ -75,7 +74,6 @@ const Navbar = () => {
                 className="relative px-5 py-2 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground/70 hover:text-foreground transition-colors group"
               >
                 <span className="relative z-10">{l.label}</span>
-                {/* Анімація тільки для десктопа, де є наведення миші */}
                 <motion.span 
                   layoutId="nav-pill"
                   className="absolute inset-0 bg-primary/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -134,7 +132,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Progress Bar - Вимкнено на мобільних для продуктивності */}
+        {/* Progress Bar */}
         <motion.div 
           className="absolute bottom-0 left-6 right-6 h-[2px] bg-gradient-to-r from-primary via-accent to-emerald-400 origin-left rounded-full hidden md:block"
           style={{ scaleX }} 
@@ -151,8 +149,8 @@ const Navbar = () => {
             transition={{ duration: 0.2 }}
             className="fixed top-[85px] left-4 right-4 z-40 md:hidden pointer-events-auto"
           >
-            <div className="bg-card/98 backdrop-blur-xl border border-primary/20 rounded-[24px] shadow-2xl p-6 flex flex-col gap-1 overflow-hidden">
-              {links.map((l, i) => (
+            <div className="bg-card/98 backdrop-blur-xl border border-primary/20 rounded-[24px] shadow-2xl p-6 flex flex-col gap-1 overflow-hidden transform-gpu">
+              {links.map((l) => (
                 <a
                   key={l.href}
                   href={l.href}

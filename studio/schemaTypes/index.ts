@@ -1,7 +1,9 @@
 import project from './project'
 import about from './about'
-import hero from './hero' // Додай це
+import hero from './hero'
 import contact from './contact'
 import experience from './experience'
+import process from './process' // 
 
-export const schemaTypes = [hero, about, project, contact, experience]
+// 2. Додаємо її в масив
+export const schemaTypes = [hero, about, project, contact, experience, process]
