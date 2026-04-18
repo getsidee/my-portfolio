@@ -4,7 +4,6 @@ import { motion, Variants } from "framer-motion";
 import { client } from "../lib/sanity";
 import { Lightbulb, Palette, Code2, Rocket } from "lucide-react";
 
-// Карта іконок для відображення значень із Sanity
 const iconMap = {
   lightbulb: <Lightbulb className="w-8 h-8" />,
   palette: <Palette className="w-8 h-8" />,
@@ -35,7 +34,6 @@ const ProcessSection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Запит до Sanity для отримання конкретного документа 'process'
     client
       .fetch(`*[_type == "process" && _id == "process"][0]`)
       .then((res) => {
@@ -73,7 +71,11 @@ const ProcessSection = () => {
   if (loading || !data) return null;
 
   return (
-    <section id="process" className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500">
+    <section 
+      key={`process-${i18n.language}`} // ВИПРАВЛЕНО: Ключ для скидання стану при зміні мови
+      id="process" 
+      className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500"
+    >
       {/* Декоративний фон */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none transform-gpu">
         <div className="absolute top-0 left-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-primary/5 blur-[80px] md:blur-[120px] rounded-full" />
@@ -81,7 +83,6 @@ const ProcessSection = () => {
 
       <div className="container mx-auto px-6 relative z-10 transform-gpu">
         <motion.div
-          key={`title-${i18n.language}`}
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -110,7 +111,6 @@ const ProcessSection = () => {
               style={{ willChange: "transform, opacity" }}
               className="group relative transform-gpu"
             >
-              {/* Велика цифра на фоні */}
               <span className="absolute -top-4 -right-2 text-7xl md:text-8xl font-black text-foreground/[0.03] dark:text-white/[0.02] pointer-events-none transition-colors group-hover:text-primary/5">
                 0{i + 1}
               </span>
@@ -128,7 +128,6 @@ const ProcessSection = () => {
                   {getLangText(step, 'description')}
                 </p>
 
-                {/* Нижня лінія акценту */}
                 <div className="absolute bottom-0 left-0 h-1 w-0 bg-primary transition-all duration-500 group-hover:w-full" />
               </div>
             </motion.div>

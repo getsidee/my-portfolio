@@ -70,8 +70,15 @@ const ProjectsSection = () => {
     },
   };
 
+  // Якщо дані ще вантажаться, не рендеримо нічого, щоб не ламати анімацію viewport
+  if (projects.length === 0) return null;
+
   return (
-    <section id="projects" className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500">
+    <section 
+      key={`projects-view-${i18n.language}`} // ВИПРАВЛЕНО
+      id="projects" 
+      className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500"
+    >
       <div className="absolute top-1/2 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 dark:bg-primary/5 blur-[60px] md:blur-[120px] rounded-full pointer-events-none transform-gpu" />
 
       <div className="container mx-auto px-6 relative z-10">
@@ -79,7 +86,7 @@ const ProjectsSection = () => {
           key={`title-${i18n.language}`}
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }} // ВИПРАВЛЕНО
+          viewport={{ once: true }}
           style={{ willChange: "transform, opacity" }}
           className="font-heading text-4xl md:text-5xl font-black mb-16 tracking-tighter text-foreground"
         >
@@ -90,12 +97,12 @@ const ProjectsSection = () => {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.05 }} // ВИПРАВЛЕНО
+          viewport={{ once: true, amount: 0.05 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10"
         >
           {projects.map((project, i) => (
             <motion.div
-              key={`${i}-${i18n.language}`} // ВИПРАВЛЕНО: унікальний ключ для мови
+              key={`${i}-${i18n.language}`}
               variants={cardVariants}
               whileHover={{ y: -8 }}
               style={{ willChange: "transform, opacity" }}

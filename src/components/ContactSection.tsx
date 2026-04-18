@@ -13,7 +13,7 @@ interface ContactData {
 }
 
 const ContactSection = () => {
-  const { ref } = useScrollAnimation(); // isVisible більше не потрібен для тригера анімацій
+  const { ref } = useScrollAnimation();
   const { t, i18n } = useTranslation();
   
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -37,11 +37,15 @@ const ContactSection = () => {
   };
 
   const cardVariants: Variants = {
-    hidden: { opacity: 0, x: -15 },
+    hidden: { opacity: 0, y: 10 },
     visible: (i: number) => ({
       opacity: 1,
-      x: 0,
-      transition: { delay: i * 0.1, duration: 0.4, ease: "easeOut" }
+      y: 0,
+      transition: { 
+        delay: i * 0.1, 
+        duration: 0.5, 
+        ease: [0.215, 0.61, 0.355, 1] 
+      }
     })
   };
 
@@ -78,33 +82,42 @@ const ContactSection = () => {
 
   const inputClasses = "w-full px-5 py-3.5 md:px-6 md:py-4 rounded-2xl bg-white/50 dark:bg-white/[0.03] border border-black/5 dark:border-white/10 focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-all text-base font-body text-foreground placeholder:text-muted-foreground/50 shadow-sm dark:shadow-none transform-gpu";
 
+  // Якщо дані ще вантажаться, не рендеримо, щоб не "ламати" анімацію
+  if (!contactInfo) return null;
+
   return (
-    <section id="contact" className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500">
+    <section 
+      key={`contact-view-${i18n.language}`} // ВИПРАВЛЕНО
+      id="contact" 
+      className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500"
+    >
+      {/* Фонові плями */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none transform-gpu">
         <div className="absolute top-0 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 dark:bg-primary/5 blur-[70px] md:blur-[120px] rounded-full" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10 transform-gpu" ref={ref}>
         <motion.h2 
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }} // ВИПРАВЛЕНО: спрацьовує 1 раз
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="font-heading text-4xl md:text-5xl font-black mb-12 md:mb-16 tracking-tighter text-foreground"
+          style={{ willChange: "transform, opacity" }}
+          className="font-heading text-4xl md:text-5xl font-black mb-12 md:mb-16 tracking-tighter text-foreground transform-gpu"
         >
           <span className="text-gradient-holo">// </span>{t("nav_contact")}
         </motion.h2>
 
         <div className="grid lg:grid-cols-[0.9fr_1fr] gap-12 md:gap-16 max-w-6xl mx-auto transform-gpu">
-          <div className="space-y-8 md:space-y-10">
+          <div className="space-y-8 md:space-y-10 transform-gpu">
             <AnimatePresence mode="wait">
               <motion.div
                 key={i18n.language}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} // ВИПРАВЛЕНО
+                viewport={{ once: true }}
                 transition={{ duration: 0.4 }}
-                className="space-y-6"
+                className="space-y-6 transform-gpu"
               >
                 <p className="text-foreground/80 dark:text-muted-foreground leading-relaxed font-body text-lg md:text-xl font-medium">
                   {getLangText('description') || t("contact_description")}
@@ -115,21 +128,21 @@ const ContactSection = () => {
             <div className="grid gap-3 md:gap-4 transform-gpu">
               {[
                 { 
-                  href: `mailto:${contactInfo?.email}`, 
+                  href: `mailto:${contactInfo.email}`, 
                   icon: <Mail size={18} className="md:w-5" />, 
-                  label: contactInfo?.email,
+                  label: contactInfo.email,
                   sub: "Email me anytime",
                   color: "text-rose-600 dark:text-rose-500 bg-rose-500/10" 
                 },
                 { 
-                  href: contactInfo?.github, 
+                  href: contactInfo.github, 
                   icon: <Github size={18} className="md:w-5" />, 
                   label: "GitHub Profile",
                   sub: "Check my repositories",
                   color: "text-zinc-600 dark:text-zinc-400 bg-zinc-400/10" 
                 },
                 { 
-                  href: contactInfo?.linkedin, 
+                  href: contactInfo.linkedin, 
                   icon: <Linkedin size={18} className="md:w-5" />, 
                   label: "LinkedIn Profile",
                   sub: "Let's connect professionally",
@@ -141,7 +154,7 @@ const ContactSection = () => {
                   custom={i}
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true }} // ВИПРАВЛЕНО
+                  viewport={{ once: true }}
                   variants={cardVariants}
                   href={item.href} 
                   target={i > 0 ? "_blank" : undefined}
@@ -163,13 +176,13 @@ const ContactSection = () => {
           <motion.form 
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} // ВИПРАВЛЕНО
+            viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
             onSubmit={handleSubmit} 
             style={{ willChange: "transform, opacity" }}
             className="glass-card p-6 md:p-10 rounded-[30px] md:rounded-[40px] border-white/60 dark:border-white/10 relative flex flex-col justify-between shadow-sm transform-gpu"
           >
-            <div className="space-y-4 md:space-y-5 relative z-10">
+            <div className="space-y-4 md:space-y-5 relative z-10 transform-gpu">
               <div className="flex items-center gap-2 mb-2 md:mb-4 opacity-60 dark:opacity-40">
                 <Globe size={14} className="text-primary" />
                 <span className="font-mono text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-foreground dark:text-white">Quick Message</span>
@@ -203,7 +216,7 @@ const ContactSection = () => {
               </div>
             </div>
 
-            <div className="mt-6 md:mt-8 relative z-10">
+            <div className="mt-6 md:mt-8 relative z-10 transform-gpu">
               <motion.button 
                 type="submit" 
                 whileHover={{ scale: 1.01 }}
@@ -220,6 +233,7 @@ const ContactSection = () => {
                   <motion.div 
                     initial={{ opacity: 0 }} 
                     animate={{ opacity: 1 }} 
+                    exit={{ opacity: 0 }}
                     className="text-[11px] font-mono text-primary bg-primary/10 p-3 rounded-xl mt-3 text-center border border-primary/10 transform-gpu"
                   >
                     {status}

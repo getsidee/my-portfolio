@@ -59,14 +59,21 @@ const ExperienceSection = () => {
     }
   };
 
+  // Не рендеримо секцію, поки дані не завантажені, щоб не "ламати" viewport анімацію
+  if (experiences.length === 0) return null;
+
   return (
-    <section id="experience" className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500">
+    <section 
+      key={`experience-view-${i18n.language}`} // ВИПРАВЛЕНО
+      id="experience" 
+      className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500"
+    >
       <div className="container mx-auto px-6 relative z-10 transform-gpu">
         <motion.h2
           key={`title-${i18n.language}`}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }} // ВИПРАВЛЕНО: once: true
+          viewport={{ once: true, amount: 0.5 }}
           variants={titleVariants}
           style={{ willChange: "transform, opacity" }}
           className="font-heading text-4xl md:text-5xl font-black mb-16 md:mb-20 tracking-tighter text-foreground"
@@ -79,7 +86,7 @@ const ExperienceSection = () => {
           <motion.div
             initial={{ scaleY: 0 }}
             whileInView={{ scaleY: 1 }}
-            viewport={{ once: true }} // ВИПРАВЛЕНО: once: true
+            viewport={{ once: true }}
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
             style={{ 
               originY: 0, 
@@ -93,12 +100,12 @@ const ExperienceSection = () => {
             variants={timelineVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.05 }} // ВИПРАВЛЕНО: once: true
+            viewport={{ once: true, amount: 0.05 }}
             className="space-y-12 md:space-y-16"
           >
             {experiences.map((exp, i) => (
               <motion.div
-                key={i}
+                key={`${i}-${i18n.language}`} // ВИПРАВЛЕНО
                 variants={itemVariants}
                 style={{ willChange: "transform, opacity" }}
                 className="relative group transform-gpu"
@@ -108,7 +115,7 @@ const ExperienceSection = () => {
                   <motion.div 
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
-                    viewport={{ once: true }} // ВИПРАВЛЕНО: once: true
+                    viewport={{ once: true }}
                     transition={{ 
                       type: "spring", 
                       stiffness: 200, 

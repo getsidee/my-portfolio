@@ -64,8 +64,15 @@ const AboutSection = () => {
     }
   };
 
+  // Не рендеримо секцію до отримання даних, щоб viewport не спрацював на пустий блок
+  if (!about) return null;
+
   return (
-    <section id="about" className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500">
+    <section 
+      key={`about-view-${i18n.language}`} // ВИПРАВЛЕНО: Ключ для скидання стану при зміні мови
+      id="about" 
+      className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500"
+    >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none transform-gpu">
         <div className="absolute top-1/4 right-0 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-primary/10 dark:bg-primary/5 blur-[60px] md:blur-[120px] rounded-full" />
         <div className="absolute bottom-1/4 left-0 w-[200px] md:w-[300px] h-[200px] md:h-[300px] bg-accent/10 dark:bg-accent/5 blur-[50px] md:blur-[100px] rounded-full" />
@@ -145,7 +152,7 @@ const AboutSection = () => {
                 <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground dark:text-white">Tech Stack</span>
               </div>
 
-              {(about?.skills && about.skills.length > 0 ? about.skills : ["React", "TypeScript", "Tailwind", "Next.js", "Framer Motion", "Node.js"]).map((skill, i) => (
+              {about.skills.map((skill: string, i: number) => (
                 <motion.div
                   key={`${skill}-${i}-${i18n.language}`}
                   variants={skillCardVariants}
