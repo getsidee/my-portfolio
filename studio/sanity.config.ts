@@ -16,22 +16,41 @@ export default defineConfig({
         S.list()
           .title('Контент')
           .items([
-            // Створюємо спеціальний пункт для "Мого підходу" (Singleton)
+            // Singleton: Мій підхід
             S.listItem()
               .title('Мій підхід')
               .id('processSingleton')
               .child(
                 S.document()
                   .schemaType('process')
-                  .documentId('process') // Фіксуємо ID, щоб документ був один
+                  .documentId('process')
+              ),
+
+            // Singleton: Послуги
+            S.listItem()
+              .title('Послуги')
+              .id('servicesSingleton')
+              .child(
+                S.document()
+                  .schemaType('services')
+                  .documentId('services')
+              ),
+
+            // Singleton: Відгуки (ДОДАНО СЮДИ)
+            S.listItem()
+              .title('Відгуки')
+              .id('testimonialsSingleton')
+              .child(
+                S.document()
+                  .schemaType('testimonials')
+                  .documentId('testimonials') // Фронтенд шукає саме цей ID
               ),
             
-            // Додаємо роздільник
             S.divider(),
 
-            // Додаємо решту схем, крім 'process', щоб вони не дублювалися
+            // Додаємо 'testimonials' у фільтр, щоб не було дублів
             ...S.documentTypeListItems().filter(
-              (listItem) => !['process'].includes(listItem.getId() as string)
+              (listItem) => !['process', 'services', 'testimonials'].includes(listItem.getId() as string)
             ),
           ]),
     }),

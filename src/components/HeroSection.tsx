@@ -56,14 +56,19 @@ const HeroSection = () => {
     if (!hero?.name) return <>Bohdan <span className="text-gradient-holo">Medvedchuk</span></>;
     const parts = hero.name.split(' ');
     return (
-      <span key={i18n.language}>
+      <span key={`name-${i18n.language}`}>
         {parts[0]} <span className="text-gradient-holo">{parts.slice(1).join(' ')}</span>
       </span>
     );
   };
 
+  if (!hero) return null; // Захист від порожнього рендеру
+
   return (
-    <section className="min-h-screen flex items-center justify-center pt-16 bg-gradient-hero relative overflow-hidden transition-colors duration-500">
+    <section 
+      key={`hero-view-${i18n.language}`} // ВИПРАВЛЕНО
+      className="min-h-screen flex items-center justify-center pt-16 bg-gradient-hero relative overflow-hidden transition-colors duration-500"
+    >
       
       {/* Плями для світлої теми */}
       <div className="absolute inset-0 block dark:hidden pointer-events-none transform-gpu">
@@ -89,8 +94,7 @@ const HeroSection = () => {
         <motion.div 
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible" // ВИПРАВЛЕНО: Використовуємо whileInView
-          viewport={{ once: true }} // ВИПРАВЛЕНО: Спрацьовує лише один раз
+          animate="visible" // Для Hero краще використовувати animate замість whileInView
           className="max-w-3xl mx-auto text-center space-y-8 transform-gpu"
         >
           {/* Logo блок */}
@@ -144,11 +148,11 @@ const HeroSection = () => {
             </motion.p>
           </div>
 
-          <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 md:gap-5 pt-4">
+          <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 md:gap-5 pt-4 transform-gpu">
             {[
-              { href: hero?.github || "https://github.com/getsidee", icon: <Github size={20} className="md:w-[22px]" />, label: "GitHub" },
-              { href: hero?.linkedin || "https://www.linkedin.com/", icon: <Linkedin size={20} className="md:w-[22px]" />, label: "LinkedIn" },
-              { href: hero?.email ? `mailto:${hero.email}` : "mailto:medvedchukbogdan@gmail.com", icon: <Mail size={20} className="md:w-[22px]" />, label: "Email" }
+              { href: hero.github || "https://github.com/getsidee", icon: <Github size={20} className="md:w-[22px]" />, label: "GitHub" },
+              { href: hero.linkedin || "https://www.linkedin.com/", icon: <Linkedin size={20} className="md:w-[22px]" />, label: "LinkedIn" },
+              { href: hero.email ? `mailto:${hero.email}` : "mailto:medvedchukbogdan@gmail.com", icon: <Mail size={20} className="md:w-[22px]" />, label: "Email" }
             ].map((link, i) => (
               <motion.a
                 key={i}

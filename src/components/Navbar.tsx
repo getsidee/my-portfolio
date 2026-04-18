@@ -26,9 +26,17 @@ const Navbar = () => {
   const links = [
     { href: "#about", label: t("nav_about") },
     { href: "#experience", label: t("nav_experience") },
-    { href: "#process", label: t("nav_process", { defaultValue: "Підхід" }) }, // НОВИЙ ПУНКТ
+    { href: "#process", label: t("nav_process", { defaultValue: "Підхід" }) },
     { href: "#projects", label: t("nav_projects") },
+    { href: "#services", label: t("nav_services", { defaultValue: "Послуги" }) },
     { href: "#contact", label: t("nav_contact") },
+    // ДОДАНО: Секція відгуків
+    { 
+      href: "#testimonials", 
+      label: t("nav_testimonials", { 
+        defaultValue: i18n.language === 'ua' ? 'Відгуки' : i18n.language === 'pl' ? 'Opinie' : 'Reviews' 
+      }) 
+    },
   ];
 
   const languages = [
@@ -49,11 +57,11 @@ const Navbar = () => {
         className={`
           pointer-events-auto
           relative flex items-center justify-between
-          w-full px-5 md:px-10 py-3
+          w-full px-5 md:px-8 py-3
           rounded-[24px] md:rounded-full border transition-all duration-300
           ${isScrolled 
-            ? "max-w-5xl bg-background/80 dark:bg-background/70 backdrop-blur-lg md:backdrop-blur-2xl border-primary/30 shadow-2xl shadow-primary/5" 
-            : "max-w-6xl bg-transparent border-transparent"
+            ? "max-w-6xl bg-background/80 dark:bg-background/70 backdrop-blur-lg md:backdrop-blur-2xl border-primary/30 shadow-2xl shadow-primary/5" 
+            : "max-w-7xl bg-transparent border-transparent"
           }
         `}
       >
@@ -71,7 +79,7 @@ const Navbar = () => {
               <a
                 key={l.href}
                 href={l.href}
-                className="relative px-5 py-2 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground/70 hover:text-foreground transition-colors group"
+                className="relative px-3 lg:px-4 py-2 font-mono text-[9px] lg:text-[10px] font-bold uppercase tracking-widest text-foreground/70 hover:text-foreground transition-colors group"
               >
                 <span className="relative z-10">{l.label}</span>
                 <motion.span 
@@ -82,7 +90,7 @@ const Navbar = () => {
             ))}
           </div>
 
-          <div className="h-6 w-[1px] bg-border/60 mx-4 opacity-40" />
+          <div className="h-6 w-[1px] bg-border/60 mx-2 lg:mx-4 opacity-40" />
 
           <div className="flex items-center gap-3">
             <div className="relative">

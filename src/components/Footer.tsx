@@ -5,10 +5,11 @@ import { motion } from "framer-motion";
 import { Github, Linkedin, Mail } from "lucide-react";
 
 const Footer = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [name, setName] = useState("");
 
   useEffect(() => {
+    // Отримуємо ім'я з Sanity
     client.fetch(`*[_type == "about"][0] { name }`)
       .then((data) => {
         if (data?.name) setName(data.name);
@@ -17,56 +18,63 @@ const Footer = () => {
   }, []);
 
   const socials = [
-    { icon: <Github size={20} />, href: "https://github.com/getsidee" },
-    { icon: <Linkedin size={20} />, href: "https://linkedin.com/" },
-    { icon: <Mail size={20} />, href: "mailto:medvedchukbogdan@gmail.com" }
+    { icon: <Github size={20} />, href: "https://github.com/getsidee", label: "GitHub" },
+    { icon: <Linkedin size={20} />, href: "https://linkedin.com/", label: "LinkedIn" },
+    { icon: <Mail size={20} />, href: "mailto:medvedchukbogdan@gmail.com", label: "Email" }
   ];
 
   return (
-    <footer className="py-16 relative bg-background mt-20">
-      {/* Чітка лінія-розділювач */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[1px] bg-border/40" />
+    <footer 
+      key={`footer-${i18n.language}`} 
+      className="py-12 md:py-16 relative bg-background overflow-hidden"
+    >
+      {/* Прибрано верхню лінію та великий відступ, 
+        оскільки TechMarquee тепер служить розділювачем
+      */}
 
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-10">
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6">
           
-          {/* Ліва частина: Копірайт (Більш контрастний текст) */}
-          <div className="space-y-1 text-center md:text-left order-2 md:order-1">
-            <p className="font-mono text-sm font-bold text-foreground/90 tracking-wide">
+          {/* Ліва частина: Копірайт */}
+          <div className="space-y-2 text-center md:text-left order-2 md:order-1 transform-gpu">
+            <p className="font-mono text-sm font-black text-foreground tracking-tight">
               © {new Date().getFullYear()} {name || "Bohdan Medvedchuk"}
             </p>
-            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
-              {t("footer_all_rights") || "Всі права захищені"}
+            <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
+              {t("footer_rights") || "Всі права захищені"}
             </p>
           </div>
 
-          {/* Центральна частина: Логотип (Яскравіший) */}
+          {/* Центральна частина: Логотип */}
           <motion.a 
             href="#" 
             whileHover={{ scale: 1.05 }}
-            className="font-heading text-2xl font-black tracking-tighter text-gradient-holo drop-shadow-sm order-1 md:order-2"
+            whileTap={{ scale: 0.95 }}
+            className="font-heading text-2xl md:text-3xl font-black tracking-tighter text-gradient-holo drop-shadow-sm order-1 md:order-2 transform-gpu"
           >
             {"<B.M />"}
           </motion.a>
 
-          {/* Права частина: Соцмережі (Більші іконки) */}
-          <div className="flex flex-col items-center md:items-end gap-3 order-3">
-            <div className="flex gap-4">
+          {/* Права частина: Соцмережі */}
+          <div className="flex flex-col items-center md:items-end gap-4 order-3 transform-gpu">
+            <div className="flex gap-3 md:gap-4">
               {socials.map((social, i) => (
                 <motion.a
                   key={i}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ y: -3, scale: 1.1 }}
-                  className="w-11 h-11 rounded-xl glass-card flex items-center justify-center text-foreground/80 hover:text-primary transition-all border-white/20 shadow-sm"
+                  whileHover={{ y: -4, scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-11 h-11 md:w-12 md:h-12 rounded-2xl glass-card flex items-center justify-center text-foreground/70 hover:text-primary transition-all border-white/20 dark:border-white/5 shadow-sm transform-gpu bg-white/5"
+                  aria-label={social.label}
                 >
                   {social.icon}
                 </motion.a>
               ))}
             </div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
-              Tech: React & Sanity
+            <p className="font-mono text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 transition-colors hover:text-primary/40 cursor-default">
+              Built with React & Sanity
             </p>
           </div>
 
