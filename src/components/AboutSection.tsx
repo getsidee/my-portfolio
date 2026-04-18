@@ -28,7 +28,6 @@ const AboutSection = () => {
     return about?.[`${fieldPrefix}_${lang}`] || about?.[`${fieldPrefix}_en`] || "";
   };
 
-  // Оптимізовані варіанти: менша амплітуда для мобільних
   const titleVariants: Variants = {
     hidden: { opacity: 0, x: -20 },
     visible: { 
@@ -67,7 +66,6 @@ const AboutSection = () => {
 
   return (
     <section id="about" className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500">
-      {/* Оптимізовані фонові плями: менший blur на мобільних */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none transform-gpu">
         <div className="absolute top-1/4 right-0 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-primary/10 dark:bg-primary/5 blur-[60px] md:blur-[120px] rounded-full" />
         <div className="absolute bottom-1/4 left-0 w-[200px] md:w-[300px] h-[200px] md:h-[300px] bg-accent/10 dark:bg-accent/5 blur-[50px] md:blur-[100px] rounded-full" />
@@ -133,7 +131,6 @@ const AboutSection = () => {
           </motion.div>
 
           <div className="relative transform-gpu">
-            {/* Спрощене сяйво для мобільних */}
             <div className="absolute inset-0 bg-primary/10 dark:bg-primary/5 blur-2xl md:blur-3xl rounded-full scale-75 pointer-events-none" />
             
             <motion.div 
@@ -150,7 +147,7 @@ const AboutSection = () => {
 
               {(about?.skills && about.skills.length > 0 ? about.skills : ["React", "TypeScript", "Tailwind", "Next.js", "Framer Motion", "Node.js"]).map((skill, i) => (
                 <motion.div
-                  key={`${skill}-${i}`}
+                  key={`${skill}-${i}-${i18n.language}`}
                   variants={skillCardVariants}
                   style={{ willChange: "transform, opacity" }}
                   className="px-4 md:px-6 py-2.5 md:py-3.5 rounded-[14px] md:rounded-[18px] glass-card border-white/60 dark:border-white/10 font-mono text-xs md:text-sm font-bold text-foreground/90 transition-all transform-gpu shadow-sm"

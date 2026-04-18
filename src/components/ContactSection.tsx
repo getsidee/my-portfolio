@@ -13,7 +13,7 @@ interface ContactData {
 }
 
 const ContactSection = () => {
-  const { ref, isVisible } = useScrollAnimation();
+  const { ref } = useScrollAnimation(); // isVisible більше не потрібен для тригера анімацій
   const { t, i18n } = useTranslation();
   
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -80,7 +80,6 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500">
-      {/* Фонові плями - адаптивний blur */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none transform-gpu">
         <div className="absolute top-0 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 dark:bg-primary/5 blur-[70px] md:blur-[120px] rounded-full" />
       </div>
@@ -88,7 +87,8 @@ const ContactSection = () => {
       <div className="container mx-auto px-6 relative z-10 transform-gpu" ref={ref}>
         <motion.h2 
           initial={{ opacity: 0, x: -20 }}
-          animate={isVisible ? { opacity: 1, x: 0 } : {}}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }} // ВИПРАВЛЕНО: спрацьовує 1 раз
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="font-heading text-4xl md:text-5xl font-black mb-12 md:mb-16 tracking-tighter text-foreground"
         >
@@ -101,7 +101,8 @@ const ContactSection = () => {
               <motion.div
                 key={i18n.language}
                 initial={{ opacity: 0, y: 10 }}
-                animate={isVisible ? { opacity: 1, y: 0 } : {}}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} // ВИПРАВЛЕНО
                 transition={{ duration: 0.4 }}
                 className="space-y-6"
               >
@@ -139,7 +140,8 @@ const ContactSection = () => {
                   key={i}
                   custom={i}
                   initial="hidden"
-                  animate={isVisible ? "visible" : "hidden"}
+                  whileInView="visible"
+                  viewport={{ once: true }} // ВИПРАВЛЕНО
                   variants={cardVariants}
                   href={item.href} 
                   target={i > 0 ? "_blank" : undefined}
@@ -160,7 +162,8 @@ const ContactSection = () => {
 
           <motion.form 
             initial={{ opacity: 0, y: 15 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} // ВИПРАВЛЕНО
             transition={{ duration: 0.6, delay: 0.2 }}
             onSubmit={handleSubmit} 
             style={{ willChange: "transform, opacity" }}

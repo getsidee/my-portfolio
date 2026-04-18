@@ -13,7 +13,6 @@ interface Project {
   accent: string;
 }
 
-// Оптимізовані тіні: на мобільних (hover) вони не потрібні
 const accentGlow: Record<string, string> = {
   primary: "md:hover:shadow-[0_20px_50px_rgba(59,130,246,0.12)] md:dark:hover:shadow-[0_20px_50px_rgba(59,130,246,0.2)] hover:border-blue-500/30",
   emerald: "md:hover:shadow-[0_20px_50px_rgba(16,185,129,0.12)] md:dark:hover:shadow-[0_20px_50px_rgba(16,185,129,0.2)] hover:border-emerald-500/30",
@@ -73,7 +72,6 @@ const ProjectsSection = () => {
 
   return (
     <section id="projects" className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500">
-      {/* Фонові плями - менший блюр на мобільних */}
       <div className="absolute top-1/2 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 dark:bg-primary/5 blur-[60px] md:blur-[120px] rounded-full pointer-events-none transform-gpu" />
 
       <div className="container mx-auto px-6 relative z-10">
@@ -81,7 +79,7 @@ const ProjectsSection = () => {
           key={`title-${i18n.language}`}
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true }} // ВИПРАВЛЕНО
           style={{ willChange: "transform, opacity" }}
           className="font-heading text-4xl md:text-5xl font-black mb-16 tracking-tighter text-foreground"
         >
@@ -92,12 +90,12 @@ const ProjectsSection = () => {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.05 }}
+          viewport={{ once: true, amount: 0.05 }} // ВИПРАВЛЕНО
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10"
         >
           {projects.map((project, i) => (
             <motion.div
-              key={i}
+              key={`${i}-${i18n.language}`} // ВИПРАВЛЕНО: унікальний ключ для мови
               variants={cardVariants}
               whileHover={{ y: -8 }}
               style={{ willChange: "transform, opacity" }}
@@ -106,8 +104,6 @@ const ProjectsSection = () => {
               } ${project.span || ""}`}
             >
               <div className="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-lg md:backdrop-blur-xl rounded-[27px] md:rounded-[31px] p-6 md:p-8 h-full flex flex-col relative overflow-hidden border border-white/20 dark:border-transparent transform-gpu">
-                
-                {/* Ефект відблиску - тільки для десктопа */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 dark:from-white/5 to-transparent opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 hidden md:block" />
 
                 <div className="flex justify-between items-start mb-6 md:mb-8 relative z-10 transform-gpu">

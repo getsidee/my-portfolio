@@ -66,7 +66,7 @@ const ExperienceSection = () => {
           key={`title-${i18n.language}`}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
+          viewport={{ once: true, amount: 0.5 }} // ВИПРАВЛЕНО: once: true
           variants={titleVariants}
           style={{ willChange: "transform, opacity" }}
           className="font-heading text-4xl md:text-5xl font-black mb-16 md:mb-20 tracking-tighter text-foreground"
@@ -75,11 +75,11 @@ const ExperienceSection = () => {
         </motion.h2>
 
         <div className="max-w-4xl mx-auto relative pl-10 md:pl-16 transform-gpu">
-          {/* Вертикальна лінія таймлайну - ОПТИМІЗОВАНО */}
+          {/* Вертикальна лінія таймлайну */}
           <motion.div
             initial={{ scaleY: 0 }}
             whileInView={{ scaleY: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: true }} // ВИПРАВЛЕНО: once: true
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
             style={{ 
               originY: 0, 
@@ -93,7 +93,7 @@ const ExperienceSection = () => {
             variants={timelineVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.05 }}
+            viewport={{ once: true, amount: 0.05 }} // ВИПРАВЛЕНО: once: true
             className="space-y-12 md:space-y-16"
           >
             {experiences.map((exp, i) => (
@@ -108,7 +108,7 @@ const ExperienceSection = () => {
                   <motion.div 
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: true }} // ВИПРАВЛЕНО: once: true
                     transition={{ 
                       type: "spring", 
                       stiffness: 200, 
@@ -117,7 +117,6 @@ const ExperienceSection = () => {
                     }}
                     className={`w-5 h-5 md:w-6 md:h-6 rounded-full ${exp.color.includes('bg-') ? exp.color : 'bg-primary'} border-4 border-background shadow-md relative`}
                   >
-                    {/* Пульсація тільки для десктопа */}
                     {i === 0 && (
                       <motion.div 
                         animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
@@ -146,7 +145,6 @@ const ExperienceSection = () => {
                     </span>
                   </div>
 
-                  {/* Текстовий блок - ОПТИМІЗОВАНО */}
                   <div className="relative p-5 md:p-8 rounded-[20px] md:rounded-[28px] glass-card border-white/60 dark:border-white/10 bg-white/30 dark:bg-white/[0.02] shadow-sm transform-gpu">
                     <p className="text-foreground/80 dark:text-muted-foreground leading-relaxed whitespace-pre-line font-body text-sm md:text-lg font-medium">
                       {getLangText(exp, 'description')}

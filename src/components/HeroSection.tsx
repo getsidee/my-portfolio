@@ -39,7 +39,7 @@ const HeroSection = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 }, // Трохи пришвидшено для мобільних
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
     },
   };
 
@@ -65,25 +65,21 @@ const HeroSection = () => {
   return (
     <section className="min-h-screen flex items-center justify-center pt-16 bg-gradient-hero relative overflow-hidden transition-colors duration-500">
       
-      {/* СВІТЛА ТЕМА: Оптимізовані плями (менший блюр на мобільних) */}
+      {/* Плями для світлої теми */}
       <div className="absolute inset-0 block dark:hidden pointer-events-none transform-gpu">
         <div className="absolute top-[-5%] left-[-10%] w-[300px] md:w-[50%] h-[300px] md:h-[50%] bg-primary/10 blur-[60px] md:blur-[120px] rounded-full" />
         <div className="absolute bottom-[5%] right-[-5%] w-[250px] md:w-[45%] h-[250px] md:h-[45%] bg-accent/10 blur-[50px] md:blur-[100px] rounded-full" />
       </div>
 
-      {/* ТЕМНА ТЕМА: Спрощена анімація для мобільних (тільки opacity) */}
+      {/* Плями для темної теми */}
       <motion.div 
-        animate={{ 
-          opacity: [0.03, 0.05, 0.03], 
-        }}
+        animate={{ opacity: [0.03, 0.05, 0.03] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         style={{ willChange: "opacity" }}
         className="absolute top-[-15%] right-[-5%] w-[350px] md:w-[800px] h-[350px] md:h-[800px] bg-primary/20 rounded-full blur-[80px] md:blur-[160px] pointer-events-none hidden dark:block transform-gpu" 
       />
       <motion.div 
-        animate={{ 
-          opacity: [0.02, 0.04, 0.02],
-        }}
+        animate={{ opacity: [0.02, 0.04, 0.02] }}
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         style={{ willChange: "opacity" }}
         className="absolute bottom-[-10%] left-[-10%] w-[400px] md:w-[900px] h-[400px] md:h-[900px] bg-accent/10 rounded-full blur-[90px] md:blur-[180px] pointer-events-none hidden dark:block transform-gpu" 
@@ -93,15 +89,19 @@ const HeroSection = () => {
         <motion.div 
           variants={containerVariants}
           initial="hidden"
-          animate="visible"
+          whileInView="visible" // ВИПРАВЛЕНО: Використовуємо whileInView
+          viewport={{ once: true }} // ВИПРАВЛЕНО: Спрацьовує лише один раз
           className="max-w-3xl mx-auto text-center space-y-8 transform-gpu"
         >
           {/* Logo блок */}
-          <motion.div variants={itemVariants} className="relative w-32 h-32 md:w-36 md:h-36 mx-auto transform-gpu">
+          <motion.div 
+            variants={itemVariants} 
+            className="relative w-32 h-32 md:w-36 md:h-36 mx-auto transform-gpu"
+          >
             <div className="absolute inset-4 rounded-full bg-primary/10 blur-[15px] animate-pulse" />
             
             <motion.div 
-              animate={{ y: [-5, 5, -5] }} // Зменшена амплітуда
+              animate={{ y: [-5, 5, -5] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               style={{ willChange: "transform" }}
               className="relative w-full h-full"
