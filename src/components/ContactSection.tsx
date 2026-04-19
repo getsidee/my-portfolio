@@ -80,20 +80,18 @@ const ContactSection = () => {
     }
   };
 
-  const inputClasses = "w-full px-5 py-3.5 md:px-6 md:py-4 rounded-2xl bg-white/50 dark:bg-white/[0.03] border border-black/5 dark:border-white/10 focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-all text-base font-body text-foreground placeholder:text-muted-foreground/50 shadow-sm dark:shadow-none transform-gpu";
+  const inputClasses = "w-full px-5 py-3.5 md:px-6 md:py-4 rounded-2xl bg-white/50 dark:bg-white/[0.03] border border-black/5 dark:border-white/10 focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-all text-base font-body text-foreground placeholder:text-muted-foreground/50 shadow-sm dark:shadow-none transform-gpu will-change-[border-color,box-shadow]";
 
-  // Якщо дані ще вантажаться, не рендеримо, щоб не "ламати" анімацію
   if (!contactInfo) return null;
 
   return (
     <section 
-      key={`contact-view-${i18n.language}`} // ВИПРАВЛЕНО
       id="contact" 
-      className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500"
+      className="py-24 md:py-32 relative bg-background transition-colors duration-500"
     >
       {/* Фонові плями */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none transform-gpu">
-        <div className="absolute top-0 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 dark:bg-primary/5 blur-[70px] md:blur-[120px] rounded-full" />
+        <div className="absolute top-0 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/5 blur-[80px] md:blur-[120px] rounded-full transform-gpu" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10 transform-gpu" ref={ref}>
@@ -114,8 +112,8 @@ const ContactSection = () => {
               <motion.div
                 key={i18n.language}
                 initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.4 }}
                 className="space-y-6 transform-gpu"
               >
@@ -159,6 +157,12 @@ const ContactSection = () => {
                   href={item.href} 
                   target={i > 0 ? "_blank" : undefined}
                   rel="noopener noreferrer"
+                  style={{ 
+                    willChange: "transform, opacity",
+                    WebkitBackfaceVisibility: "hidden",
+                    backfaceVisibility: "hidden",
+                    transform: "translate3d(0,0,0)"
+                  }}
                   className="flex items-center gap-4 md:gap-5 p-4 md:p-5 rounded-[20px] md:rounded-[24px] glass-card border-white/60 dark:border-white/5 hover:border-primary/40 transition-all group transform-gpu shadow-sm"
                 >
                   <div className={`p-3 md:p-4 rounded-xl md:rounded-2xl ${item.color} group-hover:scale-105 transition-transform duration-300 transform-gpu`}>
@@ -179,7 +183,12 @@ const ContactSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
             onSubmit={handleSubmit} 
-            style={{ willChange: "transform, opacity" }}
+            style={{ 
+              willChange: "transform, opacity",
+              WebkitBackfaceVisibility: "hidden",
+              backfaceVisibility: "hidden",
+              transform: "translate3d(0,0,0)"
+            }}
             className="glass-card p-6 md:p-10 rounded-[30px] md:rounded-[40px] border-white/60 dark:border-white/10 relative flex flex-col justify-between shadow-sm transform-gpu"
           >
             <div className="space-y-4 md:space-y-5 relative z-10 transform-gpu">

@@ -38,7 +38,7 @@ const ServicesSection = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.15 }
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 }
     }
   };
 
@@ -47,7 +47,7 @@ const ServicesSection = () => {
     visible: { 
       opacity: 1, 
       y: 0, 
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } 
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } 
     }
   };
 
@@ -55,9 +55,8 @@ const ServicesSection = () => {
 
   return (
     <section 
-      key={`services-view-${i18n.language}`}
       id="services" 
-      className="py-24 md:py-32 relative overflow-hidden bg-background/50"
+      className="py-24 md:py-32 relative bg-background/50 transition-colors duration-500"
     >
       <div className="container mx-auto px-6 relative z-10">
         <motion.div
@@ -85,9 +84,16 @@ const ServicesSection = () => {
               key={`${i}-${i18n.language}`}
               variants={cardVariants}
               whileHover={{ y: -5 }}
+              // ФІКС МИГОТІННЯ: Оптимізація шарів для Safari
+              style={{ 
+                willChange: "transform, opacity",
+                WebkitBackfaceVisibility: "hidden",
+                backfaceVisibility: "hidden",
+                transform: "translateZ(0)"
+              }}
               className="group relative glass-card p-8 md:p-10 rounded-[32px] border-white/40 dark:border-white/5 bg-white/20 dark:bg-zinc-900/40 transition-all duration-500 hover:border-primary/30 transform-gpu shadow-sm"
             >
-              <div className="flex flex-col md:flex-row gap-6 items-start transform-gpu">
+              <div className="flex flex-col md:flex-row gap-6 items-start">
                 <div className="p-4 rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
                   {iconMap[service.icon as keyof typeof iconMap] || <Code2 className="w-8 h-8" />}
                 </div>

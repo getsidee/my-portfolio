@@ -14,10 +14,10 @@ interface Project {
 }
 
 const accentGlow: Record<string, string> = {
-  primary: "md:hover:shadow-[0_20px_50px_rgba(59,130,246,0.12)] md:dark:hover:shadow-[0_20px_50px_rgba(59,130,246,0.2)] hover:border-blue-500/30",
-  emerald: "md:hover:shadow-[0_20px_50px_rgba(16,185,129,0.12)] md:dark:hover:shadow-[0_20px_50px_rgba(16,185,129,0.2)] hover:border-emerald-500/30",
-  cyan: "md:hover:shadow-[0_20px_50px_rgba(6,182,212,0.12)] md:dark:hover:shadow-[0_20px_50px_rgba(6,182,212,0.2)] hover:border-cyan-500/30",
-  accent: "md:hover:shadow-[0_20px_50px_rgba(168,85,247,0.12)] md:dark:hover:shadow-[0_20px_50px_rgba(168,85,247,0.2)] hover:border-purple-500/30",
+  primary: "md:hover:shadow-[0_20px_50px_rgba(59,130,246,0.12)] hover:border-blue-500/30",
+  emerald: "md:hover:shadow-[0_20px_50px_rgba(16,185,129,0.12)] hover:border-emerald-500/30",
+  cyan: "md:hover:shadow-[0_20px_50px_rgba(6,182,212,0.12)] hover:border-cyan-500/30",
+  accent: "md:hover:shadow-[0_20px_50px_rgba(168,85,247,0.12)] hover:border-purple-500/30",
 };
 
 const accentBadge: Record<string, string> = {
@@ -56,30 +56,28 @@ const ProjectsSection = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 },
     },
   };
 
   const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 20, scale: 0.98 },
+    hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
       y: 0, 
-      scale: 1,
       transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } 
     },
   };
 
-  // Якщо дані ще вантажаться, не рендеримо нічого, щоб не ламати анімацію viewport
   if (projects.length === 0) return null;
 
   return (
     <section 
-      key={`projects-view-${i18n.language}`} // ВИПРАВЛЕНО
       id="projects" 
-      className="py-24 md:py-32 relative overflow-hidden bg-background transition-colors duration-500"
+      className="py-24 md:py-32 relative bg-background transition-colors duration-500"
     >
-      <div className="absolute top-1/2 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 dark:bg-primary/5 blur-[60px] md:blur-[120px] rounded-full pointer-events-none transform-gpu" />
+      {/* Спрощена фонова пляма */}
+      <div className="absolute top-1/2 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/5 blur-[80px] md:blur-[120px] rounded-full pointer-events-none transform-gpu" />
 
       <div className="container mx-auto px-6 relative z-10">
         <motion.h2
@@ -87,7 +85,6 @@ const ProjectsSection = () => {
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          style={{ willChange: "transform, opacity" }}
           className="font-heading text-4xl md:text-5xl font-black mb-16 tracking-tighter text-foreground"
         >
           <span className="text-gradient-holo">// </span>{t("nav_projects")}
@@ -97,7 +94,7 @@ const ProjectsSection = () => {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.05 }}
+          viewport={{ once: true, amount: 0.1 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10"
         >
           {projects.map((project, i) => (
@@ -105,28 +102,33 @@ const ProjectsSection = () => {
               key={`${i}-${i18n.language}`}
               variants={cardVariants}
               whileHover={{ y: -8 }}
-              style={{ willChange: "transform, opacity" }}
+              // ФІКС МИГОТІННЯ: Виносимо на окремий шар GPU
+              style={{ 
+                willChange: "transform, opacity",
+                WebkitBackfaceVisibility: "hidden",
+                backfaceVisibility: "hidden",
+                transform: "translateZ(0)"
+              }}
               className={`group glass-card p-[1px] rounded-[28px] md:rounded-[32px] transition-all duration-500 shadow-sm transform-gpu ${
                 accentGlow[project.accent] || accentGlow.primary
               } ${project.span || ""}`}
             >
               <div className="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-lg md:backdrop-blur-xl rounded-[27px] md:rounded-[31px] p-6 md:p-8 h-full flex flex-col relative overflow-hidden border border-white/20 dark:border-transparent transform-gpu">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/20 dark:from-white/5 to-transparent opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 hidden md:block" />
-
-                <div className="flex justify-between items-start mb-6 md:mb-8 relative z-10 transform-gpu">
+                
+                <div className="flex justify-between items-start mb-6 md:mb-8 relative z-10">
                   <div className={`p-2.5 md:p-3 rounded-xl md:rounded-2xl ${accentBadge[project.accent] || accentBadge.primary} border border-current/10`}>
                     <Code2 size={22} className="md:w-[24px]" />
                   </div>
                   <div className="flex gap-2.5 md:gap-3">
                     {project.github && (
                       <a href={project.github} target="_blank" rel="noopener noreferrer" 
-                         className="p-2 md:p-2.5 rounded-xl bg-background/50 dark:bg-white/5 text-foreground/60 hover:text-primary transition-all shadow-sm">
+                         className="p-2 md:p-2.5 rounded-xl bg-background/50 dark:bg-white/5 text-foreground/60 hover:text-primary transition-all">
                         <Github size={18} className="md:w-[20px]" />
                       </a>
                     )}
                     {project.live && (
                       <a href={project.live} target="_blank" rel="noopener noreferrer" 
-                         className="p-2 md:p-2.5 rounded-xl bg-background/50 dark:bg-white/5 text-foreground/60 hover:text-primary transition-all shadow-sm">
+                         className="p-2 md:p-2.5 rounded-xl bg-background/50 dark:bg-white/5 text-foreground/60 hover:text-primary transition-all">
                         <ExternalLink size={18} className="md:w-[20px]" />
                       </a>
                     )}

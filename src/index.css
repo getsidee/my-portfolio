@@ -45,6 +45,7 @@
 @layer base {
   * { 
     border-color: hsl(var(--border));
+    /* Важливо для iOS: прибирає сіре виділення при натисканні */
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -53,11 +54,13 @@
     color: hsl(var(--foreground));
     font-family: 'Work Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
+    /* Уникаємо конфліктів при зміні теми на мобільних */
     @media (min-width: 768px) {
       transition: background-color 0.3s ease;
     }
   }
 
+  /* Вимикаємо фокус-рамку для мишки, але лишаємо для клавіатури */
   :focus:not(:focus-visible) {
     outline: none !important;
     box-shadow: none !important;
@@ -71,16 +74,19 @@
 
 @layer components {
   .glass-card {
-    /* Оптимізація блюру для мобільних (iOS Safari дуже чутливий до високих значень) */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    /* ФІКС МИГОТІННЯ ДЛЯ iOS:
+       На мобільних Safari великий blur + анімація = миготіння.
+       Ми зменшуємо інтенсивність блюру на мобільних і примусово вмикаємо GPU.
+    */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     
     @media (min-width: 768px) {
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
     }
 
-    /* ФІКС МИГОТІННЯ: Виносимо на апаратне прискорення */
+    /* Апаратне прискорення */
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-perspective: 1000;
@@ -88,21 +94,26 @@
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
 
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    /* Оптимізація рендерингу */
+    will-change: transform, opacity;
     
-    will-change: transform, opacity, backdrop-filter;
+    /* Додаткова щільність фону для мобільних (щоб менше залежати від блюру) */
+    background-color: rgba(255, 255, 255, 0.7);
+    @media (min-width: 768px) {
+        background-color: rgba(255, 255, 255, 0.45);
+    }
 
-    background-color: rgba(255, 255, 255, 0.45);
+    transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+    position: relative;
     border: 1px solid rgba(255, 255, 255, 0.7);
     box-shadow: 0 4px 12px 0 rgba(31, 38, 135, 0.04);
   }
 
   .dark .glass-card {
-    background-color: rgba(15, 15, 20, 0.4);
+    background-color: rgba(15, 15, 20, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.08);
     @media (min-width: 768px) {
+        background-color: rgba(15, 15, 20, 0.4);
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
     }
   }
@@ -114,7 +125,7 @@
     background-image: linear-gradient(to right, hsl(var(--primary)), #10b981, #06b6d4);
     background-size: 200% 200%;
     animation: gradient-x 15s ease infinite;
-    /* Також додаємо GPU прискорення для тексту */
+    /* GPU прискорення для тексту */
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
   }
