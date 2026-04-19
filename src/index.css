@@ -45,7 +45,6 @@
 @layer base {
   * { 
     border-color: hsl(var(--border));
-    /* Прибираємо синє підсвічування при тапі на мобільних */
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -59,16 +58,11 @@
     }
   }
 
-  /* ВИПРАВЛЕННЯ БАГУ З СИНІМ ВИДІЛЕННЯМ:
-     Ці правила прибирають outline при кліку мишкою, 
-     але залишають його доступним для навігації з клавіатури.
-  */
   :focus:not(:focus-visible) {
     outline: none !important;
     box-shadow: none !important;
   }
 
-  /* Забороняємо виділення тексту в навігації та кнопках (прибирає синє тло тексту) */
   nav, button, .select-none {
     user-select: none;
     -webkit-user-select: none;
@@ -77,20 +71,28 @@
 
 @layer components {
   .glass-card {
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    /* Оптимізація блюру для мобільних (iOS Safari дуже чутливий до високих значень) */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     
     @media (min-width: 768px) {
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
     }
 
+    /* ФІКС МИГОТІННЯ: Виносимо на апаратне прискорення */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+
     transition: transform 0.3s ease, opacity 0.3s ease;
     position: relative;
     overflow: hidden;
     
-    transform: translateZ(0);
-    will-change: transform, opacity;
+    will-change: transform, opacity, backdrop-filter;
 
     background-color: rgba(255, 255, 255, 0.45);
     border: 1px solid rgba(255, 255, 255, 0.7);
@@ -112,6 +114,8 @@
     background-image: linear-gradient(to right, hsl(var(--primary)), #10b981, #06b6d4);
     background-size: 200% 200%;
     animation: gradient-x 15s ease infinite;
+    /* Також додаємо GPU прискорення для тексту */
+    -webkit-transform: translateZ(0);
     transform: translateZ(0);
   }
 }

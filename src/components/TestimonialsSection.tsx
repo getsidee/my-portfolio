@@ -59,9 +59,9 @@ const TestimonialsSection = () => {
       id="testimonials"
       className="py-24 md:py-32 bg-background relative overflow-hidden"
     >
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-20 dark:opacity-40">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 blur-[120px] rounded-full" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/20 blur-[120px] rounded-full" />
+      {/* ОПТИМІЗОВАНИЙ ФОН: використовуємо один шар замість багатьох об'єктів blur */}
+      <div className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-40 transform-gpu">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.15)_0,transparent_70%)]" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -90,11 +90,12 @@ const TestimonialsSection = () => {
           >
             {data.items.map((item: any, i: number) => (
               <motion.div
-                // ВИПРАВЛЕНО: Використовуємо стабільний ключ без прив'язки до мови
                 key={item._id || i} 
-                layout // Додано для плавної зміни контенту всередині
+                layout
                 variants={cardVariants}
                 whileHover={{ y: -8, transition: { duration: 0.2 } }}
+                //will-change допомагає браузеру виділити ресурси під анімацію
+                style={{ willChange: "transform, opacity" }}
                 className="glass-card p-8 rounded-[32px] border-white/40 dark:border-white/5 bg-white/20 dark:bg-zinc-900/40 relative group transform-gpu"
               >
                 <Quote className="absolute top-6 right-8 w-10 h-10 text-primary/10 group-hover:text-primary/20 transition-colors" />
@@ -144,6 +145,7 @@ const TestimonialsSection = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
+          style={{ willChange: "transform, opacity" }}
         >
           <ReviewForm />
         </motion.div>
