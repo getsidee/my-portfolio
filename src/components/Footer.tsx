@@ -19,7 +19,7 @@ const Footer = () => {
 
   const socials = [
     { icon: <Github size={20} />, href: "https://github.com/getsidee", label: "GitHub" },
-    { icon: <Linkedin size={20} />, href: "https://linkedin.com/", label: "LinkedIn" },
+    { icon: <Linkedin size={20} />, href: "https://www.linkedin.com/in/bohdan-medvedchuk-ba3378367/", label: "LinkedIn" },
     { icon: <Mail size={20} />, href: "mailto:medvedchukbogdan@gmail.com", label: "Email" }
   ];
 

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
@@ -10,32 +11,48 @@ import ContactSection from "@/components/ContactSection";
 import TechMarquee from "@/components/TechMarquee";
 import Footer from "@/components/Footer";
 
-const Index = () => (
-  <div className="min-h-screen bg-background text-foreground scroll-smooth">
-    <Navbar />
-    
-    <HeroSection />
-    
-    <AboutSection />
-    
-    <ExperienceSection />
-    
-    <ProcessSection />
-    
-    <ProjectsSection />
+const Index = () => {
+  useEffect(() => {
+    // 1. Вимикаємо автоматичне відновлення скролу браузером (найважливіше)
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
 
-    <ServicesSection />
-    
-    {/* Секція контакту: користувач може написати відразу після перегляду послуг */}
-    <ContactSection />
+    // 2. Скролимо в самий верх при завантаженні/оновленні
+    window.scrollTo(0, 0);
 
-    {/* Секція відгуків: фінальний соціальний доказ та можливість залишити свій фідбек */}
-    <TestimonialsSection />
+    // 3. (Опціонально) Очищуємо хеш з URL, щоб при оновленні не тягнуло до секції
+    if (window.location.hash) {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
 
-    <TechMarquee />
-    
-    <Footer />
-  </div>
-);
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      
+      {/* Додамо id="hero" для HeroSection, якщо його там ще немає */}
+      <HeroSection />
+      
+      <AboutSection />
+      
+      <ExperienceSection />
+      
+      <ProcessSection />
+      
+      <ProjectsSection />
+
+      <ServicesSection />
+      
+      <ContactSection />
+
+      <TestimonialsSection />
+
+      <TechMarquee />
+      
+      <Footer />
+    </div>
+  );
+};
 
 export default Index;

@@ -62,11 +62,13 @@ const HeroSection = () => {
     );
   };
 
-  if (!hero) return null; // Захист від порожнього рендеру
+  // Використовуємо hero або порожній об'єкт для запобігання помилок до завантаження даних
+  const safeHero = hero || {};
 
   return (
     <section 
-      key={`hero-view-${i18n.language}`} // ВИПРАВЛЕНО
+      id="hero" // ДОДАНО: ID для стабільного скролу та навігації
+      key={`hero-view-${i18n.language}`}
       className="min-h-screen flex items-center justify-center pt-16 bg-gradient-hero relative overflow-hidden transition-colors duration-500"
     >
       
@@ -94,7 +96,7 @@ const HeroSection = () => {
         <motion.div 
           variants={containerVariants}
           initial="hidden"
-          animate="visible" // Для Hero краще використовувати animate замість whileInView
+          animate="visible"
           className="max-w-3xl mx-auto text-center space-y-8 transform-gpu"
         >
           {/* Logo блок */}
@@ -150,9 +152,9 @@ const HeroSection = () => {
 
           <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 md:gap-5 pt-4 transform-gpu">
             {[
-              { href: hero.github || "https://github.com/getsidee", icon: <Github size={20} className="md:w-[22px]" />, label: "GitHub" },
-              { href: hero.linkedin || "https://www.linkedin.com/", icon: <Linkedin size={20} className="md:w-[22px]" />, label: "LinkedIn" },
-              { href: hero.email ? `mailto:${hero.email}` : "mailto:medvedchukbogdan@gmail.com", icon: <Mail size={20} className="md:w-[22px]" />, label: "Email" }
+              { href: safeHero.github || "https://github.com/getsidee", icon: <Github size={20} className="md:w-[22px]" />, label: "GitHub" },
+              { href: safeHero.linkedin || "https://www.linkedin.com/", icon: <Linkedin size={20} className="md:w-[22px]" />, label: "LinkedIn" },
+              { href: safeHero.email ? `mailto:${safeHero.email}` : "mailto:medvedchukbogdan@gmail.com", icon: <Mail size={20} className="md:w-[22px]" />, label: "Email" }
             ].map((link, i) => (
               <motion.a
                 key={i}
