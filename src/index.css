@@ -43,22 +43,40 @@
 }
 
 @layer base {
-  * { border-color: hsl(var(--border)); }
+  * { 
+    border-color: hsl(var(--border));
+    /* Прибираємо синє підсвічування при тапі на мобільних */
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: 'Work Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
-    /* Оптимізація: прибираємо transition для фону на body, це важко для мобільних */
     @media (min-width: 768px) {
       transition: background-color 0.3s ease;
     }
+  }
+
+  /* ВИПРАВЛЕННЯ БАГУ З СИНІМ ВИДІЛЕННЯМ:
+     Ці правила прибирають outline при кліку мишкою, 
+     але залишають його доступним для навігації з клавіатури.
+  */
+  :focus:not(:focus-visible) {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Забороняємо виділення тексту в навігації та кнопках (прибирає синє тло тексту) */
+  nav, button, .select-none {
+    user-select: none;
+    -webkit-user-select: none;
   }
 }
 
 @layer components {
   .glass-card {
-    /* Оптимізація: на мобільних блюр менший (8px), на десктопі лишаємо 20px */
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     
@@ -71,7 +89,6 @@
     position: relative;
     overflow: hidden;
     
-    /* Змушуємо GPU обробляти цей елемент */
     transform: translateZ(0);
     will-change: transform, opacity;
 
@@ -94,7 +111,6 @@
     color: transparent;
     background-image: linear-gradient(to right, hsl(var(--primary)), #10b981, #06b6d4);
     background-size: 200% 200%;
-    /* Анімація градієнта на мобільних може "їсти" процесор, лишаємо її тільки для потужних пристроїв або спрощуємо */
     animation: gradient-x 15s ease infinite;
     transform: translateZ(0);
   }
@@ -103,7 +119,6 @@
 @layer utilities {
   .bg-gradient-hero {
     background-color: hsl(var(--background));
-    /* Оптимізація: масивні градієнти на мобілках краще спростити */
     background-attachment: scroll; 
   }
 

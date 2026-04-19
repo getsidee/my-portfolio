@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, ChevronDown, Globe } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent, useSpring } from "framer-motion";
@@ -30,7 +30,6 @@ const Navbar = () => {
     { href: "#projects", label: t("nav_projects") },
     { href: "#services", label: t("nav_services", { defaultValue: "Послуги" }) },
     { href: "#contact", label: t("nav_contact") },
-    // ДОДАНО: Секція відгуків
     { 
       href: "#testimonials", 
       label: t("nav_testimonials", { 
@@ -48,7 +47,7 @@ const Navbar = () => {
   const currentLang = languages.find((l) => l.code === i18n.language) || languages[0];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 md:p-6 pointer-events-none transform-gpu">
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 md:p-6 pointer-events-none transform-gpu select-none">
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -66,7 +65,7 @@ const Navbar = () => {
         `}
       >
         {/* Логотип */}
-        <a href="#" className="relative group flex items-center transform-gpu">
+        <a href="#" className="relative group flex items-center transform-gpu outline-none select-none tap-highlight-none">
           <span className="font-heading text-xl font-black tracking-tighter text-gradient-holo">
             {"<B.M />"}
           </span>
@@ -77,13 +76,14 @@ const Navbar = () => {
           <div className="flex items-center bg-black/10 dark:bg-white/[0.03] rounded-full p-1 border border-white/10 backdrop-blur-md">
             {links.map((l) => (
               <a
-                key={l.href}
+                key={`${i18n.language}-${l.href}`}
                 href={l.href}
-                className="relative px-3 lg:px-4 py-2 font-mono text-[9px] lg:text-[10px] font-bold uppercase tracking-widest text-foreground/70 hover:text-foreground transition-colors group"
+                className="relative px-3 lg:px-4 py-2 font-mono text-[9px] lg:text-[10px] font-bold uppercase tracking-widest text-foreground/70 hover:text-foreground transition-colors group outline-none select-none tap-highlight-none"
               >
                 <span className="relative z-10">{l.label}</span>
                 <motion.span 
                   layoutId="nav-pill"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   className="absolute inset-0 bg-primary/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                 />
               </a>
@@ -95,8 +95,9 @@ const Navbar = () => {
           <div className="flex items-center gap-3">
             <div className="relative">
               <button
+                type="button"
                 onClick={() => setLangOpen(!langOpen)}
-                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors outline-none select-none tap-highlight-none"
               >
                 <span className="text-lg">{currentLang.flag}</span>
               </button>
@@ -112,8 +113,12 @@ const Navbar = () => {
                     {languages.map((lng) => (
                       <button
                         key={lng.code}
-                        onClick={() => { i18n.changeLanguage(lng.code); setLangOpen(false); }}
-                        className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all ${
+                        type="button"
+                        onClick={() => { 
+                          i18n.changeLanguage(lng.code); 
+                          setLangOpen(false); 
+                        }}
+                        className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all outline-none select-none tap-highlight-none ${
                           currentLang.code === lng.code ? "bg-primary text-white" : "hover:bg-white/5 text-foreground/70"
                         }`}
                       >
@@ -133,8 +138,9 @@ const Navbar = () => {
         <div className="flex md:hidden items-center gap-3 text-foreground transform-gpu">
           <ThemeToggle />
           <button
+            type="button"
             onClick={() => setOpen(!open)}
-            className="w-11 h-11 flex items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg active:scale-95 transition-transform"
+            className="w-11 h-11 flex items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg active:scale-95 transition-transform outline-none select-none tap-highlight-none"
           >
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -163,7 +169,7 @@ const Navbar = () => {
                   key={l.href}
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="text-2xl font-heading font-black tracking-tighter py-4 border-b border-foreground/5 last:border-none text-foreground/90 flex items-center justify-between"
+                  className="text-2xl font-heading font-black tracking-tighter py-4 border-b border-foreground/5 last:border-none text-foreground/90 flex items-center justify-between outline-none select-none tap-highlight-none"
                 >
                   <span>{l.label}</span>
                   <ChevronDown size={20} className="-rotate-90 opacity-30" />
@@ -175,8 +181,12 @@ const Navbar = () => {
                   {languages.map((lng) => (
                     <button 
                       key={lng.code} 
-                      onClick={() => { i18n.changeLanguage(lng.code); setOpen(false); }}
-                      className={`w-10 h-10 flex items-center justify-center rounded-lg text-lg transition-all ${
+                      type="button"
+                      onClick={() => { 
+                        i18n.changeLanguage(lng.code); 
+                        setOpen(false); 
+                      }}
+                      className={`w-10 h-10 flex items-center justify-center rounded-lg text-lg transition-all outline-none select-none tap-highlight-none ${
                         currentLang.code === lng.code ? "bg-primary text-white" : "bg-white/5"
                       }`}
                     >
