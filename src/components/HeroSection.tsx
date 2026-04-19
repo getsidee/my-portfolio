@@ -53,8 +53,9 @@ const HeroSection = () => {
   };
 
   const renderName = () => {
-    if (!hero?.name) return <>Bohdan <span className="text-gradient-holo">Medvedchuk</span></>;
-    const parts = hero.name.split(' ');
+    // Дефолтне значення, щоб не було пустоти
+    const name = hero?.name || "Bohdan Medvedchuk";
+    const parts = name.split(' ');
     return (
       <span key={`name-${i18n.language}`}>
         {parts[0]} <span className="text-gradient-holo">{parts.slice(1).join(' ')}</span>
@@ -62,25 +63,28 @@ const HeroSection = () => {
     );
   };
 
-  // ВИПРАВЛЕННЯ: Явно вказуємо тип для safeHero або використовуємо необов'язкове занурення
   const githubLink = hero?.github || "https://github.com/getsidee";
   const linkedinLink = hero?.linkedin || "https://www.linkedin.com/";
   const emailLink = hero?.email ? `mailto:${hero.email}` : "mailto:medvedchukbogdan@gmail.com";
 
-  if (!hero) return null;
+  // ВИПРАВЛЕНО: Замість null повертаємо контейнер, щоб сторінка не схлопувалася
+  if (!hero) {
+    return <section id="hero" className="min-h-screen bg-background transform-gpu" />;
+  }
 
   return (
     <section 
       id="hero"
-      key={`hero-view-${i18n.language}`}
-      className="min-h-screen flex items-center justify-center pt-16 bg-gradient-hero relative overflow-hidden transition-colors duration-500"
+      // КЛЮЧ ВИДАЛЕНО для стабільності скролу
+      className="min-h-screen flex items-center justify-center pt-16 bg-gradient-hero relative overflow-hidden transition-colors duration-500 transform-gpu"
     >
-      {/* Плями фону... (залишаються без змін) */}
+      {/* Плями фону для світлої теми */}
       <div className="absolute inset-0 block dark:hidden pointer-events-none transform-gpu">
         <div className="absolute top-[-5%] left-[-10%] w-[300px] md:w-[50%] h-[300px] md:h-[50%] bg-primary/10 blur-[60px] md:blur-[120px] rounded-full" />
         <div className="absolute bottom-[5%] right-[-5%] w-[250px] md:w-[45%] h-[250px] md:h-[45%] bg-accent/10 blur-[50px] md:blur-[100px] rounded-full" />
       </div>
 
+      {/* Плями фону для темної теми */}
       <motion.div 
         animate={{ opacity: [0.03, 0.05, 0.03] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
@@ -124,7 +128,6 @@ const HeroSection = () => {
             </motion.p>
           </div>
 
-          {/* Соціальні посилання */}
           <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 md:gap-5 pt-4 transform-gpu">
             <motion.a
               href={githubLink}
